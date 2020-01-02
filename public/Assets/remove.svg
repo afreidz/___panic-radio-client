@@ -1,0 +1,8 @@
+<svg class="remove" viewBox="0 0 500 500" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55.2 (78181) - https://sketchapp.com -->
+    <title>Combined Shape</title>
+    <desc>Created with Sketch.</desc>
+    <g stroke="none" stroke-width="1" fill-rule="evenodd">
+        <path d="M250,500 C111.928813,500 0,388.071187 0,250 C0,111.928813 111.928813,0 250,0 C388.071187,0 500,111.928813 500,250 C500,388.071187 388.071187,500 250,500 Z M250,235.857864 L168.68272,154.540585 L154.540585,168.68272 L235.857864,250 L154.540585,331.31728 L168.68272,345.459415 L250,264.142136 L331.31728,345.459415 L345.459415,331.31728 L264.142136,250 L345.459415,168.68272 L331.31728,154.540585 L250,235.857864 Z"></path>
+    </g>
+</svg>

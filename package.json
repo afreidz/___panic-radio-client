@@ -1,0 +1,30 @@
+{
+  "name": "panic-radio",
+  "version": "1.0.0",
+  "description": "",
+  "engines": {
+    "node": "^10",
+    "browsers": "last 1 chrome versions"
+  },
+  "scripts": {
+    "build": "NODE_ENV='production' npx rollup -c ./rollup.config.js",
+    "dev": "npx rollup -c ./rollup.config.js -w",
+    "setconfig": "node ./setconfig.js"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "@rollup/plugin-alias": "^3.0.0",
+    "less": "^3.10.3",
+    "moment": "^2.24.0",
+    "rollup": "^1.27.14",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-less": "^1.1.2",
+    "rollup-plugin-node-builtins": "^2.1.2",
+    "rollup-plugin-node-globals": "^1.4.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-serve": "^1.0.1",
+    "rollup-plugin-svelte": "^5.1.1",
+    "svelte": "^3.16.7",
+    "svelte-preprocess-less": "^0.4.0"
+  }
+}

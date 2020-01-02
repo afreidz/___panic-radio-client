@@ -1,0 +1,14 @@
+<svg viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55.2 (78181) - https://sketchapp.com -->
+    <title>soundcloud</title>
+    <desc>Created with Sketch.</desc>
+    <g class="soundcloud" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g transform="translate(0.000000, 7.000000)" fill-rule="nonzero">
+            <path d="M26,8 L25,8 C27,4 23,0 18,0 C17.443,0 17,0 17,0 C16.447,0 16,0.448 16,1 L16,15 C16,15.553 16.447,16 17,16 L21,16 L23,16 L26,16 C28.209,16 30,14.209 30,12 C30,9.791 28.209,8 26,8 Z"></path>
+            <path d="M1,7.917 C0.448,7.917 0,8.365 0,8.917 L0,15 C0,15.553 0.448,16 1,16 C1.552,16 2,15.553 2,15 L2,8.917 C2,8.364 1.552,7.917 1,7.917 Z"></path>
+            <path d="M9,1 C8.448,1 8,1.448 8,2 L8,15 C8,15.553 8.448,16 9,16 C9.552,16 10,15.553 10,15 L10,2 C10,1.448 9.552,1 9,1 Z"></path>
+            <path d="M13,4 C12.448,4 12,4.448 12,5 L12,15 C12,15.553 12.448,16 13,16 C13.552,16 14,15.553 14,15 L14,5 C14,4.448 13.552,4 13,4 Z"></path>
+            <path d="M5,5 C4.448,5 4,5.448 4,6 L4,15 C4,15.553 4.448,16 5,16 C5.552,16 6,15.553 6,15 L6,6 C6,5.448 5.552,5 5,5 Z"></path>
+        </g>
+    </g>
+</svg>

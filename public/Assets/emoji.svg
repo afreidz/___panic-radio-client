@@ -1,0 +1,32 @@
+<svg class="panic-emoji" viewBox="0 0 119 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55.2 (78181) - https://sketchapp.com -->
+    <title>Group</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="50%" y1="-2.48949813e-15%" x2="50%" y2="79.6852941%" id="linearGradient-1">
+            <stop stop-color="#00F5FF" offset="0%"></stop>
+            <stop stop-color="#D7146C" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Desktop-HD-Copy" transform="translate(-534.000000, -90.000000)">
+            <g id="logo" transform="translate(534.000000, 88.000000)">
+                <g id="Group" transform="translate(0.000000, 4.000000)">
+                    <g id="emoji" transform="translate(20.000000, 6.000000)">
+                        <path d="M37.7702037,64.0001841 C39.1217099,64.0001841 39.7883766,64.0001841 39.7702037,64.0001841 C66.3688128,64.0001841 79.6681173,59.0814986 79.6681173,49.2441275 C79.6490145,40.2221884 79.0338753,33.9870032 77.8226996,30.5385718 C70.8362057,10.6467891 58.861277,0.467265122 41.8979136,7.10542736e-15 L39.7702037,7.10542736e-15 C39.2184563,7.10542736e-15 38.5517896,7.10542736e-15 37.7702037,7.10542736e-15 C18.9925222,7.10542736e-15 5.81677057,15.0410232 1.84541778,30.5385718 C0.370203406,36.2953524 -9.23705556e-14,43.1655352 -9.23705556e-14,49.2441275 C-9.23705556e-14,61.0292906 24.2563243,64.0001841 37.7702037,64.0001841 Z" id="body" fill="url(#linearGradient-1)" transform="translate(39.834059, 32.000092) scale(-1, 1) translate(-39.834059, -32.000092) "></path>
+                        <ellipse id="eye-left" fill="#FFFFFF" cx="27" cy="23" rx="9" ry="10"></ellipse>
+                        <circle id="pupil-left" fill="#2F2F2F" cx="27" cy="23" r="4"></circle>
+                        <ellipse id="eye-right" fill="#FFFFFF" cx="52" cy="23" rx="9" ry="10"></ellipse>
+                        <circle id="pupil-right" fill="#2F2F2F" cx="53" cy="23" r="4"></circle>
+                        <path d="M40,53.0786041 C45.9006056,53.0786041 54.9390841,59.0121711 56.4474102,51.83941 C56.4474102,41.2288845 45.5228475,37 40,37 C34.4771525,37 22.5953654,41.4034244 22.5953654,51.83941 C23.6742677,59.0121711 33.3927001,53.0786041 40,53.0786041 Z" id="mouth" fill="#0C1652"></path>
+                    </g>
+                    <g id="headphones">
+                        <path d="M22,63 C9.85599924,63 0,55.8319994 0,47 C0,38.1680006 9.85599924,31 22,31" id="path2443" fill="#0C1652" fill-rule="nonzero"></path>
+                        <path d="M97,63 C109.144001,63 119,55.8319994 119,47 C119,38.1680006 109.144001,31 97,31" id="path2448" fill="#0C1652" fill-rule="nonzero"></path>
+                        <path d="M101,32 C101,14.336 82.1840003,0 59,0 C35.8159997,0 17,14.336 17,32" id="path2450" stroke="#0C1652" stroke-width="2.86834026" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,72 @@
+//// SIZES
+@one-rem: 30px;
+
+//// COLORS
+// Blues
+@blue-100: #192C9B;
+@blue-200: #0A155C;
+// Magentas
+@magenta-100: #EB357F;
+@magenta-200: #DC0047;
+// Neutrals
+@white: #ffffff;
+@black: #333333;
+
+//// THEMEING
+// Page
+@page-background: linear-gradient(@blue-100, @blue-200) no-repeat 100%;
+@main-page-font-color: @white;
+// Progress
+@progress-bg: rgba(0,0,0,0.1);
+@progress-fg: @white;
+@progress-thickness: unit(2px/@one-rem, rem);
+// Tracks
+@track-radius: unit(8px/@one-rem, rem);
+@track-alt-1-bg: @magenta-100;
+@track-alt-1-color: @white;
+@track-border-color: @progress-bg;
+@track-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+// Lobby Rooms
+@room-radius: @track-radius;
+@room-bg: @track-alt-1-bg;
+@room-color: @track-alt-1-color;
+@room-shadow: @track-shadow;
+@room-border-color: @track-border-color;
+// Modal
+@modal-bg: @white;
+@modal-color: @black;
+@modal-radius: @track-radius;
+@modal-backdrop: rgba(0,0,0,0.2);
+@modal-shadow: @track-shadow;
+@modal-border: none;
+@modal-alt1-bg: @page-background;
+@modal-alt1-color: @white;
+@modal-alt2-color: @white;
+@modal-alt2-bg: @magenta-200;
+// Input
+@input-height: unit(50px/@one-rem, rem);
+@input-bg: rgba(255,255,255,0.1);
+@input-radius: @input-height/2;
+@input-color: @white;
+@input-border: none;
+// Button
+@button-height: unit(46px/@one-rem, rem);
+@button-radius: @input-height/2;
+@button-bg: @white;
+@button-color: @blue-200;
+@button-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+@button-hover-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+// Menu
+@menu-bg: @blue-200;
+@menu-color: @white;
+@menu-item-height: unit(50px/@one-rem, rem);
+@menu-item-border: 1px solid rgba(255,255,255,0.3);
+// Avatar
+@avatar-border: 0.1em solid @white;
+@avatar-bg: @blue-200;
+// Views
+@view-bg: @page-background;
+@view-color: @white;
+@view-shadow: @track-shadow;
+// Controls
+@controls-shadow: @button-shadow;
