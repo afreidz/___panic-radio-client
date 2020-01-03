@@ -9,7 +9,13 @@
   
   <main>
     {#if !warned}
-    <button id="warn" on:click={() => warned = true}>Click to acknowledge autoplay</button>
+    <section class="warning">
+      <article>
+        <h3>Warning!</h3>
+        <p>This site ... wait for it ... plays audio! Shocking, I know.  Please be advised that the fine friends at Goolge require that you be ABSOLUTELY SURE you want this to happen.  Therefore no audio will play until you acknowledge this warning and proceed anyway.  Your ears have been warned!</p>
+        <PanicButton on:click={() => warned = true}>I understand, let me in!</PanicButton>
+      </article>
+    </section>
     {:else}
     {#if $tracks.length}
       {#each $tracks as track, i}
@@ -103,21 +109,46 @@
     left: 0; right: 0;
     top: 2rem; bottom: 2rem;
     
-    overflow: hidden;
-    /* overflow: auto; */
-    /* scroll-snap-type: y mandatory; */
+    /* overflow: hidden; */
+    overflow: auto;
+    scroll-snap-type: y mandatory;
     padding-bottom: 37.5vh;
 
     section {
       width: 100%;
       height: 70vh;
       padding-top: 10vh;
-      /* scroll-snap-align: start; */
+      scroll-snap-align: start;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
       align-items: center;
       perspective: 1200px;
+    }
+
+    section.warning {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      article {
+        width: 50vw;
+        height: 50vw;
+        h3 {
+          text-align: center;
+          font-family: 'Montserrat';
+          font-weight: 800;
+          margin: 0.75rem auto;
+        }
+        p {
+          text-align: justify;
+          font-weight: 300;
+          font-size: unit(16px/@one-rem, rem);
+          line-height: 1.6;
+          margin-bottom: 1.5rem;
+        }
+      }
     }
   }
 
@@ -156,6 +187,7 @@
   import PanicCrate from 'Components/Crate/Crate';
   import PanicTrack from 'Components/Track/Track';
   import PanicSearch from 'Components/Crate/Search';
+  import PanicButton from 'Components/Button/Button';
   import PanicPreview from 'Components/Crate/Preview';
   import PanicControls from 'Components/Menu/Controls';
   import PanicMenuToggle from 'Components/Menu/Toggle';
