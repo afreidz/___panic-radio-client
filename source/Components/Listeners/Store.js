@@ -1,6 +1,6 @@
-import { socket, currentuser } from 'App/Store';
-import { writable, get, derived } from 'svelte/store';
+import { socket } from 'App/Store';
+import { derived } from 'svelte/store';
 
-export const listeners = derived([socket, currentuser], ([$socket, $currentuser], set) => {
-  $socket.onhostmessage('listener-update', data => set(data.listeners));
+export const listeners = derived([socket], ([$socket], set) => {
+  $socket.onhostmessage('listeners', data => set(data.listeners));
 }, []);

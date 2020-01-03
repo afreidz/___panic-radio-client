@@ -1,18 +1,10 @@
-<ul class="{controlslocation}">
+<ul class="{controlslocation}" style="grid-area: {area}">
 
   {#if [...$pinned].length}
   <li class="control">
     <button class="mover" on:click={rotatecontrolslocation}>
       <em>🔄</em>
     </button>
-  </li>
-  {/if}
-  
-  {#if $pinned.has('login')}
-  <li class="control">
-     <button title="{!!$currentuser ? 'logout' : 'login'}" on:click={() => !!$currentuser ? dispatch('logout') : dispatch('login')}>
-      <em>🔑</em>
-     </button>
   </li>
   {/if}
 
@@ -24,7 +16,7 @@
   </li>
   {/if}
 
-  {#if $pinned.has('crate') && !!$currentuser}
+  {#if $pinned.has('crate')}
   <li class="control" on:click={() => dispatch('crate')}>
      <button title="Crate">
       <em>📦</em>
@@ -43,32 +35,10 @@
     z-index: 1;
     transform: scale(0.6);
     justify-content: center;
-
-    &.north {
-      top: 0px;
-      width: 100%;
-      transform-origin: top center;
-    }
-
-    &.south {
-      bottom: 0px;
-      width: 100%;
-      transform-origin: bottom center;
-    }
-
-    &.east {
-      margin-top: 30vh;
-      right: 0px;
-      width: 1rem;
-      flex-direction: column;
-    }
-
-    &.west {
-      margin-top: 30vh;
-      left: 0px;
-      width: 1rem;
-      flex-direction: column;
-    }
+    margin-top: 30vh;
+    right: 20px;
+    width: 1rem;
+    flex-direction: column;
   }
 
   .control {
@@ -99,9 +69,8 @@
 
 <script>
   import { pinned } from './Store';
-  import { currentuser } from 'App/Store';
   import { createEventDispatcher } from 'svelte';
-  import { muted } from 'Components/Audio/Store';
+  import { muted } from 'Components/Track/Store';
   import PanicAvatar from 'Components/Avatar/Avatar';
 
   export let area = null;

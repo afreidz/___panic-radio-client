@@ -1,15 +1,14 @@
+import { socket } from 'App/Store';
 import { derived } from 'svelte/store';
-import { socket, currentuser } from 'App/Store';
-import { items as crate } from 'Components/Crate/Store';
+import { listeners } from 'Components/Listeners/Store';
 
-export const djs = derived([socket, currentuser], ([$socket, $currentuser], set) => {
-  $socket.onhostmessage('dj-update', data => set(data.djs));
-}, []);
-
-export const request = derived([socket, crate], ([$socket, $crate], set) => {
-  $socket.onhostmessage('request', () => {
-    const song = $crate.shift();
-    // crate.set($crate);
-    if (!!song) $socket.sendhost({ type: 'play', song });
+export const djs = derived([socket, listeners], ([$socket, $listeners], set) => {
+  $socket.onhostmessage('djs', data => {
+    const djs = [];
+    data.djs.forEach(dj => {
+      const listener = $listeners.find(l => l.id === dj);
+      if (listener) djs.push(listener);
+    });
+    set(djs);
   });
-}, false);
+}, []);

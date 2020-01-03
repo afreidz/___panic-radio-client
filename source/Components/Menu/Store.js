@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { createPersistantSet } from 'Utilities/persistentstore';
+import { persistantSet } from 'Utilities/storehelpers';
 
 export const open = writable(false);
-export const pinned = createPersistantSet('pinned');
+export const pinned = persistantSet('pinned');

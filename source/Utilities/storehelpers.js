@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 
-export default function createPersistantWritable(key, initial) {
+export function persistantWritable(key, initial) {
   const json = window.localStorage.getItem(key);
   const { subscribe, set, update } = writable(json ? JSON.parse(json) : initial);
 
@@ -21,7 +21,7 @@ export default function createPersistantWritable(key, initial) {
   }
 }
 
-export function createPersistantSet(key) {
+export function persistantSet(key) {
   const localset = new Set;
   const json = window.localStorage.getItem(key);
   if (json) JSON.parse(json).forEach(i => localset.add(i));
@@ -51,4 +51,30 @@ export function createPersistantSet(key) {
     },
     has: localset.has.bind(localset),
   }
+}
+
+export function writableSet() {
+  const localstate = new Set;
+  const { subscribe, set, update } = writable(localstate);
+
+  return {
+    set,
+    update,
+    subscribe,
+    add: i => {
+      localstate.add(i);
+      update(() => (localstate));
+    },
+    delete: i => {
+      localstate.delete(i);
+      update(() => (localstate));
+    },
+    has: i => (localstate.has(i))
+  };
+}
+
+export default {
+  writableSet,
+  persistantSet,
+  persistantWritable,
 }

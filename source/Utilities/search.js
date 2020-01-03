@@ -1,4 +1,3 @@
-import { jwt } from 'App/store';
 import { get } from 'svelte/store';
 import { PANIC_RADIO_HOST_ENDPOINT } from '../../config';
 
@@ -7,7 +6,7 @@ export default async function (query, provider = "youtube") {
   const url = `${PANIC_RADIO_HOST_ENDPOINT}/search/${provider}`;
   const opts = {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${get(jwt)}` },
+    headers: { 'Content-Type': 'application/json' },
     body,
   }
   const resp = await fetch(url, opts);

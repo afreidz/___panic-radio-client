@@ -1,25 +1,6 @@
 <nav class="menu" class:open={!!$open} style="grid-area: {area}">
   <ul>
     <li>
-      <button class="menuitem" on:click={() => !!$currentuser ? dispatch('logout') : dispatch('login')}>
-        {#if !!$currentuser}
-        <em class="hascomponent">
-          <PanicAvatar user={$currentuser.id}/>
-        </em>
-        {:else}
-        <em>🔑</em>
-        {/if}
-        <span>
-          {#if !!$currentuser} Logout ({$currentuser.username}) {:else} Login {/if}
-        </span>
-      </button>
-      {#if $pinned.has('login')}
-      <button class="pin" on:click={() => pinned.delete('login')}>✖️</button>
-      {:else}
-      <button class="pin" on:click={() => pinned.add('login')}>📌</button>
-      {/if}
-    </li>
-    <li>
       <button class="menuitem" on:click={() => ($muted = !$muted)}>
         <em>{ !!$muted ? '🔇' : '🔊'}</em>
         <span>{ !!$muted ? 'Unmute' : 'Mute' }</span>
@@ -30,7 +11,6 @@
       <button class="pin" on:click={() => pinned.add('mute')}>📌</button>
       {/if}
     </li>
-    {#if !!$currentuser}
     <li>
       <button class="menuitem" on:click={() => dispatch('crate')}>
         <em>📦</em>
@@ -42,7 +22,6 @@
       <button class="pin" on:click={() => pinned.add('crate')}>📌</button>
       {/if}
     </li>
-    {/if}
   </ul>
 </nav>
 
@@ -108,9 +87,8 @@
 
 <script>
   import { pinned, open } from './Store';
-  import { currentuser } from 'App/Store';
-  import { muted } from 'Components/Audio/Store';
   import { createEventDispatcher } from 'svelte';
+  import { muted } from 'Components/Track/Store';
   import PanicAvatar from 'Components/Avatar/Avatar';
 
   const dispatch = createEventDispatcher();

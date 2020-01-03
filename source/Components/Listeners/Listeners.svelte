@@ -1,49 +1,26 @@
-<aside style="grid-area: {area};">
-  <small>{$room} Listeners</small>
-  <ul>
-    {#each $listeners as listener}
-    <li><PanicAvatar user={listener} /></li>
-    {/each}
-  </ul>
-</aside>
+
+<ul>
+  {#each $listeners as listener}
+  <li><PanicAvatar user={listener} /></li>
+  {/each}
+</ul>
 
 <style lang="less">
   @import 'source/Styles/index';
 
-  aside {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-
-  small {
-    font-size: unit(14px/@one-rem, rem);
-    font-weight: 400;
-    display: block;
-    text-transform: capitalize;
-    text-indent: 0.5rem;
-    text-align: left;
-    line-height: 2;
-  }
-
   ul {
     width: 100%;
-    height: 100%;
+    height: 2rem;
     display: flex;
     align-items: center;
     flex-wrap: nowrap;
     overflow-x: auto;
     overflow-y: hidden;
-    background: @menu-bg;
-    border-top: @menu-item-border;
+    padding-left: 0.5rem;
     li {
-      flex-grow: 0;
-      flex-shrink: 0;
-      height: 1.5rem;
-      width: 1.5rem;
-      display: flex;
-      margin: 0.3rem;
+      height: 1rem;
+      width: 1rem;
+      margin-right: 0.5rem;
     }
   }
 </style>
@@ -52,6 +29,4 @@
   import { room } from 'App/Store';
   import { listeners } from './Store';
   import PanicAvatar from 'Components/Avatar/Avatar';
-
-  export let area = null;
 </script>

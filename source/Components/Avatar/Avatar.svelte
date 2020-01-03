@@ -1,27 +1,22 @@
-{#await loading}
-<Loader/>
-{:then record}
 <div class="avatarcontainer">
   <div 
-    class="avatar {record.username || ''}"
-    class:hasuser={!!record.id} 
+    class="avatar {user.name || ''}"
     on:click={e => click(e)} 
-    title={record.username}
+    title={user.name}
   >
     {#if showphoto}
     <img 
-      src={record.photo || defaultuserimg} 
-      alt="Avatar for {record.username}"
+      src={user.photo || defaultuserimg} 
+      alt="Avatar for {user.name}"
     />
     {/if}
   </div>
-  {#if !!showvote}
+  {#if !!showvote && !!vote}
   <em>
     {#if vote === 'like'}🤘{:else if vote === 'dislike'}💩{/if}
   </em>
   {/if}
 </div>
-{/await}
 
 <style lang="less">
   @import 'source/Styles/index';
@@ -54,30 +49,19 @@
       left: -10%;
       position: relative;
     }
-    &.hasuser {
-      background: @avatar-bg;
-    }
   }
 </style>
 
 <script>
-  import Loader from 'Assets/loader';
-  import getuser from 'Utilities/getuser';
   import defaultuserimg from 'Utilities/defaultuserimg';
+  const systemphoto = './assets/emoji.svg';
 
-  let loading;
-  let vote = null;
-  let systemphoto = './assets/emoji.svg';  
-  export let user = null;
-  export let state = null;
+  export let user = {};
+  export let vote = null;
   export let showvote = true;
   export let showphoto = true;
   export let click = () => {};
 
-  $: if(user === null) loading = Promise.resolve({});
-  $: if(user === 'system') loading = Promise.resolve({ username: 'PanicRadio', photo: systemphoto, id: Infinity });
-  $: if(!!user && user !== 'system') {
-    // if(user == 1571085708811) throw new Error('weirdness');
-    loading = getuser(user);
-  }
+  $: if(user === 'system') user = { name: 'PanicRadio', photo: systemphoto, id: Infinity };
+  $: if(!user) user = {};
 </script>

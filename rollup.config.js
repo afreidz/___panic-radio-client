@@ -21,6 +21,7 @@ export default [{
         { find: 'Utilities', replacement: path.resolve(__dirname, 'source', 'Utilities') },
         { find: 'Styles', replacement: path.resolve(__dirname, 'source', 'Styles') },
         { find: 'Assets', replacement: path.resolve(__dirname, 'public', 'assets') },
+        { find: 'Config', replacement: path.resolve(__dirname, 'config.js') },
       ],
       resolve: ['.js', '.html', '.less', '.css', '.svg', '.svelte'],
     }),
