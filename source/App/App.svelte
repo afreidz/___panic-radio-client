@@ -129,7 +129,8 @@
 
     section.warning {
       margin: auto;
-      max-width: 80vw;
+      width: 80vw;
+      max-width: unit(500px/@one-rem, rem);
       > div { 
         margin-top: 1rem; 
         width: 100%;

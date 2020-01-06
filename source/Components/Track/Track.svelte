@@ -11,6 +11,7 @@
     <caption>
       <em>{track.title}</em>
       <strong>{track.artist}</strong>
+      <PanicProgress start={track.elapsed} duration={track.duration} />
     </caption>
     <div class="actions">
     {#if !!voting}
@@ -98,6 +99,7 @@
 
 <script>
   import { room } from 'App/Store';
+  import PanicProgress from './Progress';
   import PanicElevator from './Elevator';
   import PanicVote from 'Components/Track/Vote';
   import PanicAvatar from 'Components/Avatar/Avatar';
