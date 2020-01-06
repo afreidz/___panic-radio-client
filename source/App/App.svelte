@@ -10,11 +10,10 @@
   <main>
     {#if !warned}
     <section class="warning">
-      <article>
-        <h3>Warning!</h3>
-        <p>This site ... wait for it ... plays audio! Shocking, I know.  Please be advised that the fine friends at Goolge require that you be ABSOLUTELY SURE you want this to happen.  Therefore no audio will play until you acknowledge this warning and proceed anyway.  Your ears have been warned!</p>
+      <PanicProTip type="Warning!" size="large" tip={"This site ... wait for it ... plays audio! Shocking, I know.  Please be advised that the fine friends at Goolge require that you be ABSOLUTELY SURE you want this to happen.  Therefore no audio will play until you acknowledge this warning and proceed anyway.  Your ears have been warned!"}/>
+      <div>
         <PanicButton on:click={() => warned = true}>I understand, let me in!</PanicButton>
-      </article>
+      </div>
     </section>
     {:else}
     {#if $tracks.length}
@@ -22,6 +21,7 @@
       <section bind:this={tracksections[i]}>
         <PanicTrack 
           active={i === currentidx}
+          voting={true}
           track={track} 
         />
       </section>
@@ -30,6 +30,7 @@
     <section transition:fly="{{ y: 100, duration: 500 }}">
       <PanicTrack
         active={true}
+        voting={false}
         elevator={true}
         track="{{ 
           title: 'Nothing', 
@@ -127,27 +128,11 @@
     }
 
     section.warning {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-
-      article {
-        width: 50vw;
-        height: 50vw;
-        h3 {
-          text-align: center;
-          font-family: 'Montserrat';
-          font-weight: 800;
-          margin: 0.75rem auto;
-        }
-        p {
-          text-align: justify;
-          font-weight: 300;
-          font-size: unit(16px/@one-rem, rem);
-          line-height: 1.6;
-          margin-bottom: 1.5rem;
-        }
+      margin: auto;
+      max-width: 80vw;
+      > div { 
+        margin-top: 1rem; 
+        width: 100%;
       }
     }
   }
@@ -186,6 +171,7 @@
   import PanicBooth from 'Components/Booth/Booth';
   import PanicCrate from 'Components/Crate/Crate';
   import PanicTrack from 'Components/Track/Track';
+  import PanicProTip from 'Components/ProTip/Tip';
   import PanicSearch from 'Components/Crate/Search';
   import PanicButton from 'Components/Button/Button';
   import PanicPreview from 'Components/Crate/Preview';

@@ -12,9 +12,13 @@
       <em>{track.title}</em>
       <strong>{track.artist}</strong>
     </caption>
-    {#if !!elevator}
+    <div class="actions">
+    {#if !!voting}
+      <PanicVote/>
+    {:else if !!elevator}
       <PanicElevator/>
     {/if}
+    </div>
   </div>
   <audio bind:this={audio} data-src={src} muted={$muted} />
 </article>
@@ -61,26 +65,41 @@
     box-shadow: @track-shadow;
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
     align-items: center;
   }
   .front { 
     z-index: 2; 
     transform: rotateY(0deg);
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-areas: "avatar";
   }
-  .back { transform: rotateY(180deg); }
+  .back { 
+    transform: rotateY(180deg); 
+    display: grid;
+    grid-template-rows: 7rem auto 5rem;
+    grid-template-areas: "avatar" "details" "actions";
+  }
 
   figure {
     width: 4rem;
+    grid-area: avatar;
+    justify-self: center;
   }
   caption {
+    grid-area: details;
     em, strong { display: block; }
+  }
+  .actions {
+    grid-area: actions;
+    align-self: end;
   }
 </style>
 
 <script>
   import { room } from 'App/Store';
   import PanicElevator from './Elevator';
+  import PanicVote from 'Components/Track/Vote';
   import PanicAvatar from 'Components/Avatar/Avatar';
   import { PANIC_RADIO_HOST_ENDPOINT } from 'Config';
   import { muted, current, elevator as downsrc } from './Store';
@@ -109,5 +128,6 @@
   
   export let track = {};
   export let active = false;
+  export let voting = false;
   export let elevator = false;
 </script>

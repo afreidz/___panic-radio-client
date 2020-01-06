@@ -36,7 +36,7 @@
     transform: scale(0.6);
     justify-content: center;
     margin-top: 30vh;
-    right: 20px;
+    right: 0;
     width: 1rem;
     flex-direction: column;
   }
