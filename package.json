@@ -24,6 +24,7 @@
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-serve": "^1.0.1",
     "rollup-plugin-svelte": "^5.1.1",
+    "sortablejs": "^1.10.2",
     "svelte": "^3.16.7",
     "svelte-preprocess-less": "^0.4.0"
   }

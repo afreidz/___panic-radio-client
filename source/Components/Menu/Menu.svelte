@@ -1,31 +1,31 @@
 <nav class="menu" class:pinmode={pinmode} class:open={!!$open} style="grid-area: {area}">
   <ul>
-    <li
-      on:mouseup={endhold}
-      on:touchend={endhold}
-      on:mousedown={starthold}
-      on:touchstart={starthold}
-    >
-      <button class="menuitem" on:click={() => ($muted = !$muted)}>
-        <em>{ !!$muted ? '🔇' : '🔊'}</em>
-        <span>{ !!$muted ? 'Unmute' : 'Mute' }</span>
-      </button>
+    <li>
+      <PanicHolder 
+        on:hold={() => (pinmode = true)}
+        on:default={() => ($muted = !$muted)}
+      >
+        <div class="menuitem">
+          <em>{ !!$muted ? '🔇' : '🔊'}</em>
+          <span>{ !!$muted ? 'Unmute' : 'Mute' }</span>
+        </div>
+      </PanicHolder>
       {#if $pinned.has('mute')}
       <button class="pin" on:click={() => pinned.delete('mute')}>✖️</button>
       {:else}
       <button class="pin" on:click={() => pinned.add('mute')}>📌</button>
       {/if}
     </li>
-    <li
-      on:mouseup={endhold}
-      on:touchend={endhold}
-      on:mousedown={starthold}
-      on:touchstart={starthold}
-    >
-      <button class="menuitem" on:click={() => dispatch('crate')}>
-        <em>📦</em>
-        <span>Crate</span>
-      </button>
+    <li>
+      <PanicHolder 
+        on:hold={() => (pinmode = true)}
+        on:default={() => dispatch('crate')}
+      >
+        <div class="menuitem">
+          <em>📦</em>
+          <span>Crate</span>
+        </div>
+      </PanicHolder>
       {#if $pinned.has('crate')}
       <button class="pin" on:click={() => pinned.delete('crate')}>✖️</button>
       {:else}
@@ -82,6 +82,10 @@
         button { 
           font-size: 0.75rem; 
           margin-top: 0.25rem;
+          border: none;
+          outline: none;
+          padding: none;
+          background: none;
         }
       }
     }
@@ -134,24 +138,10 @@
   import { muted } from 'Components/Track/Store';
   import PanicProTip from 'Components/ProTip/Tip';
   import PanicAvatar from 'Components/Avatar/Avatar';
+  import PanicHolder from 'Components/Button/Holder';
 
   const dispatch = createEventDispatcher();
   let pinmode = false;
-  let pintimer;
-
-  function starthold(e){
-    if(!!pinmode) return true;
-    pintimer = setTimeout(() => {
-      pintimer = null;
-      pinmode = true;
-    }, 400);
-  }
-
-  function endhold(){
-    if(!pintimer) return true;
-    pinmode = false;
-    clearTimeout(pintimer);
-  }
   
   export let area = null;
 </script>

@@ -6,44 +6,42 @@
         type="text" 
         name="search"
         value={query}
-        bind:this={search}
+        bind:this={searchelm}
       />
       <span>🔍</span>
     </label>
   </form>
   <div class="content">
-    <ul class="tabs">
+    <!-- <ul class="tabs">
       <li class:active={active === 'yt'}>
-        <button on:click={() => setsearch('yt')}><YouTubeIcon/></button>
+        <button on:click={() => active = 'yt'}><YouTubeIcon/></button>
       </li>
       <li class:active={active === 'sc'}>
-        <button on:click={() => setsearch('sc')}><SoundCloudIcon/></button>
+        <button on:click={() => active = 'sc'}><SoundCloudIcon/></button>
       </li>
       <li class:active={active === 'bc'}>
-        <button on:click={() => setsearch('bc')}><BandcampIcon/></button>      
+        <button on:click={() => active = 'bc'}><BandcampIcon/></button>      
       </li>
-    </ul>
-    {#if !results[active].length}
+    </ul> -->
     {#if !!loadingstate}
     <div class="loadingstate">
       <PanicLoader/>
     </div>
-    {:else}
+    {:else if !searchresults[active].length}
     <div class="nullstate">
       <p>
-        {#if !!search && !!search.value}
-        <span>Could not find any results for "{search.value}"</span>
+        {#if !!searchelm && !!searchelm.value}
+        <span>Could not find any results for "{searchelm.value}"</span>
         <small>Please try your search again</small>
         {:else}
-        <span>You have {$items} song{#if items !== 1}s{/if} in your crate.</span>  
+        <span>You have {$items.length} song{#if $items.length !== 1}s{/if} in your crate.</span>  
         <small>Search to add more</small>
         {/if}
       </p>
     </div>
-    {/if}
     {:else}
     <ul class="items">
-    {#each results[active] as result}
+    {#each searchresults[active] as result}
     <li class="searchresult">
       {#if result.preview}
       <button class="preview" on:click={() => previewtrack(result.preview)}>▶️</button>
@@ -85,11 +83,13 @@
     outline: none;
     font-size: 1rem;
     color: @view-color;
+    background: rgba(0,0,0,0.3);
   }
   .search {
     grid-area: search;
     font-size: 1rem;
     display: flex;
+    padding-left: unit(15px/@one-rem, rem);
 
     input { 
       flex-grow: 1;
@@ -206,56 +206,43 @@
 
 <script>
   import moment from 'moment';
-  import { onMount } from 'svelte';
+  import { socket } from 'App/Store';
   import { openviews } from 'App/Store';
   import PanicLoader from 'Assets/loader';
-  import searchAPI from 'Utilities/search';
-  import { items, preview } from './Store';
   import YouTubeIcon from 'Assets/youtube';
   import BandcampIcon from 'Assets/bandcamp';
   import { createEventDispatcher } from 'svelte';
   import SoundCloudIcon from 'Assets/soundcloud';
-  
+  import { items, preview, results } from './Store';
+
   let dispatch = createEventDispatcher();
   let loadingstate = false;
+  let searchresults;
   let active = 'yt';
   let query = null;
-  let results = {
-    yt: [],
-    sc: [],
-    bc: [],
-  };
-  let search;
+  let searchelm;
   let player;
 
-  onMount(() => {
-    if(search) search.focus();
-  });
+  $: if(searchelm) searchelm.focus();
+  $: searchresults = $results;
+  $: loadingstate = !!query
+    && !searchresults.yt.length
+    && !searchresults.sc.length 
+    && !searchresults.bc.length;
 
-  function setsearch(provider){
-    active = provider;
-    if(search.value.length > 5) return handlesearch();
-  }
-
-  async function handlesearch() {
-    if(!search.value) return false;
+  function handlesearch() {
+    if(!searchelm.value || searchelm.value.length <= 2) return false;
     loadingstate = true;
-    if(search.value.length <= 2) return false
-    if(search.value !== query) {
-      query = search.value;
-      results.yt = [];
-      results.sc = [];
-      results.bc = [];
-      results[active] = await searchAPI({ query }, active);
+
+    if(searchelm.value !== query) {
+      query = searchelm.value;
+      searchresults = { yt: [], sc: [], bc: [] }
     }
-    if(!results[active].length) results[active] = await searchAPI({ query }, active);
-    loadingstate = false;
+    $socket.sendhost({ type: 'search', query });
   }
 
   function addtocrate(entry, e = null){
     $items = [...$items, entry];
-    openviews.add('crate');
-    openviews.delete('search');
     if(!!e) e.target.disabled = true;
   }
 

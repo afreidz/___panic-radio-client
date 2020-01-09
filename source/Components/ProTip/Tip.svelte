@@ -1,4 +1,4 @@
-<article>
+<article style="grid-area: {area};">
   {#if size !== 'small'}
   <h3>😨{type}</h3>
   {:else}
@@ -35,7 +35,8 @@
 </style>
 
 <script>
+  export let area;
   export let tip = '';
   export let size = 'small';
-  export let type = "PRO TIP:"
+  export let type = "PRO TIP:";
 </script>

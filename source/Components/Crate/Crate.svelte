@@ -18,41 +18,41 @@
     {:else}
     <ul class="items" bind:this={crateitems}>
       {#each $items as entry, i (entry.id)}
-      <li 
-        class="crateitem"
-        on:mouseup={endedit}
-        on:touchend={endedit}
-        data-entry={entry.id}
-        on:mousedown={startedit}
-        on:touchstart={startedit}
-        class:active={active === entry.id}
-        on:click={() => active = entry.id} 
-      >
-        {#if editing}
-        <input
-          type="checkbox"
-          id={`select_${entry.id}`}
-          name={`select_${entry.id}`}
-          bind:checked={entry.selected}
-        />
-        <label class="selector" for={`select_${entry.id}`}>
-          <strong>{@html entry.title}</strong>
-          <em>{@html entry.artist}</em>
-        </label>
-        <button class="sorter"><span>☰</span></button>
-        {:else}
-        <button class="preview" on:click={() => previewtrack(entry.preview)}>▶️</button>
-        <p>
-          <strong>{@html entry.title}</strong>
-          <em>{@html entry.artist}</em>
-        </p>
-        <button class="placeholder"><span>☰</span></button>
-        {/if}
-      </li>
+      <li>
+        <PanicHolder on:hold={() => (editing = true)}>
+          <div class="crateitem">
+            {#if editing}
+            <input
+              type="checkbox"
+              id={`select_${entry.id}`}
+              name={`select_${entry.id}`}
+              bind:checked={entry.selected}
+            />
+            <label class="selector" for={`select_${entry.id}`}>
+              <strong>{@html entry.title}</strong>
+              <em>{@html entry.artist}</em>
+            </label>
+            <button class="sorter"><span>☰</span></button>
+            {:else}
+            <button class="preview" on:click={() => previewtrack(entry.preview)}>▶️</button>
+            <p>
+              <strong>{@html entry.title}</strong>
+              <em>{@html entry.artist}</em>
+            </p>
+            <button class="placeholder"><span>☰</span></button>
+            {/if}
+          </div>
+        </PanicHolder>
+      </li>        
       {/each}
     </ul>
     {/if}
   </div>
+  <PanicProTip 
+    area="tip"
+    type="ProTip!"
+    tip={'Click and hold a crate item to enable "edit mode" where you can remove and reorder tracks in your crate'}
+  />
 </div>
 {#if !!confirm}
 <PanicModal 
@@ -82,14 +82,15 @@
     height: 100%;
     max-width: unit(1200px/@one-rem, rem);
     display: grid;
-    grid-template-columns: 2rem auto 2rem;
-    grid-template-rows: 2rem auto;
+    grid-template-columns: 2rem 2rem auto 2rem;
+    grid-template-rows: 2rem auto 2rem;
     background: @view-bg;
     color: @view-color;
     box-shadow: @view-shadow;
     grid-template-areas: 
-      'close trash search'
-      'main main main';
+      'close trash . search'
+      'main main main main'
+      'tip tip tip tip';
     position: absolute;
   }
 
@@ -122,14 +123,16 @@
       flex-grow: 1;
       background: rgba(0,0,0,0.3);
       overflow-y: auto;
-      padding: 0 unit(15px/@one-rem, rem);
-      li {
+      padding: unit(15px/@one-rem, rem);
+      .crateitem {
         display: flex;
         justify-content: center;
         align-items: center;
         margin-bottom: unit(20px/@one-rem, rem);
         height: 2rem;
         border: 1px solid transparent;
+        text-align: left;
+        color: @view-color;
 
         input[type="checkbox"]{
           visibility: hidden;
@@ -157,6 +160,9 @@
         label, p {
           flex-grow: 1;
           margin-left: unit(20px/@one-rem, rem);
+          display: flex;
+          flex-direction: column;
+          justify-content: space-around;
         }
         strong { 
           display: block;
@@ -218,19 +224,21 @@
 
 <script>
   import { tick } from 'svelte';
-  // import Sortable from 'sortablejs';
+  import Sortable from 'sortablejs';
   import { openviews } from 'App/Store';
   import { items, preview } from './Store';
   import { createEventDispatcher } from 'svelte';
+  import PanicProTip from 'Components/ProTip/Tip';
   import PanicModal from 'Components/Modal/Modal';
   import PanicButton from 'Components/Button/Button';
+  import PanicHolder from 'Components/Button/Holder';
 
   $: {
-    // if($items.length && crateitems) new Sortable(crateitems, { 
-    //   sort: true, 
-    //   onUpdate: save,
-    //   handle: '.sorter', 
-    // });
+    if($items.length && crateitems) new Sortable(crateitems, { 
+      sort: true, 
+      onUpdate: save,
+      handle: '.sorter', 
+    });
     if(!$items.length && searchButton) {
       dispatch('close'); 
       searchButton.click();
@@ -259,20 +267,6 @@
     return arr;
   }
 
-  function startedit(e){
-    if(!!editing) return true;
-    edittimer = setTimeout(() => {
-      edittimer = null;
-      editing = true;
-    }, 400);
-  }
-
-  function endedit(){
-    if(!edittimer) return true;
-    editing = false;
-    clearTimeout(edittimer);
-  }
-
   function selectall(){
     allselected = !allselected;
     $items = $items.map(i => ({ ...i, selected: allselected }));
@@ -280,7 +274,7 @@
 
   async function trash(confirmed = false){
     const removed = $items.filter(i => i.selected);
-    if(removed.length > 1 & !confirmed) {
+    if(!confirmed) {
       return confirm = true;
     }
     const newCrate = $items.filter(i => !i.selected);
