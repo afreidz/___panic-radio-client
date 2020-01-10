@@ -31,7 +31,9 @@
   em {
     position: absolute;
     font-size: 0.5rem;
-    bottom: 0; right: 0;
+    bottom: unit(-5px/@one-rem, rem);
+    right: unit(-5px/@one-rem, rem);
+    text-shadow: @vote-shadow;
   }
 
   .avatar {
@@ -53,15 +55,20 @@
 </style>
 
 <script>
+  import { votes } from './Store';
   import defaultuserimg from 'Utilities/defaultuserimg';
+  
   const systemphoto = './assets/emoji.svg';
+  let vote;
 
   export let user = {};
-  export let vote = null;
   export let showvote = true;
   export let showphoto = true;
   export let click = () => {};
 
-  $: if(user === 'system') user = { name: 'PanicRadio', photo: systemphoto, id: Infinity };
   $: if(!user) user = {};
+  $: if(user === 'system') user = { name: 'PanicRadio', photo: systemphoto, id: Infinity };
+  $: vote = $votes.find(v => v.listener === user.id)
+    ? $votes.find(v => v.listener === user.id).vote
+    : null;
 </script>

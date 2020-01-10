@@ -1,6 +1,6 @@
 <div class="crate" class:editing={editing}>
   {#if editing}
-  <button class="trash" on:click={() => trash()}>🗑️</button>
+  <button class="trash" on:click={() => confirm = true}>🗑️</button>
   <button class="selectall" on:click={selectall}>✅</button>
   <button class="done" on:click={() => editing = false}>👍</button>
   {:else}
@@ -54,25 +54,6 @@
     tip={'Click and hold a crate item to enable "edit mode" where you can remove and reorder tracks in your crate'}
   />
 </div>
-{#if !!confirm}
-<PanicModal 
-  alt={1} 
-  open={true} 
->
-  <h3 class="confirmheaeder" slot="title">Are you sure?</h3>
-  <div class="confirmtrash" slot="content">
-    You are about to remove {$items.filter(i => i.selected).length} songs from your crate.
-  </div>
-  <ul class="confirmactions" slot="actions">
-    <li>
-      <PanicButton on:click={(() => trash(true))}>Yes</PanicButton>
-    </li>
-    <li>
-      <PanicButton on:click={() => confirm = false} type="transparent">Cancel</PanicButton>
-    </li>
-  </ul>
-</PanicModal>
-{/if}
 
 <style lang="less">
   @import 'source/Styles/index';
@@ -206,20 +187,6 @@
       text-align: center; 
     }
   }
-
-  .confirmheaeder {
-    padding: unit(20px/@one-rem, rem);
-  }
-  .confirmtrash {
-    padding: unit(20px/@one-rem, rem);
-  }
-  .confirmactions {
-    padding: unit(20px/@one-rem, rem);
-    display: flex;
-    flex-direction: row-reverse;
-    li { flex: 1; }
-    li:last-child { margin-right: unit(10px/@one-rem, rem); }
-  }
 </style>
 
 <script>
@@ -227,9 +194,9 @@
   import Sortable from 'sortablejs';
   import { openviews } from 'App/Store';
   import { items, preview } from './Store';
+  import modal from 'Components/Modal/Store';
   import { createEventDispatcher } from 'svelte';
   import PanicProTip from 'Components/ProTip/Tip';
-  import PanicModal from 'Components/Modal/Modal';
   import PanicButton from 'Components/Button/Button';
   import PanicHolder from 'Components/Button/Holder';
 
@@ -242,6 +209,17 @@
     if(!$items.length && searchButton) {
       dispatch('close'); 
       searchButton.click();
+    }
+    if(confirm){
+      modal.update(m => {
+        m.content = `You are about to remove ${$items.filter(i => i.selected).length} songs from your crate.`;
+        m.cancel = () => confirm = false;
+        m.title = 'Are you sure?';
+        m.action = trash;
+        m.label = 'Yes';
+        m.open = true;
+        return m;
+      });
     }
   }
 
@@ -272,11 +250,8 @@
     $items = $items.map(i => ({ ...i, selected: allselected }));
   }
 
-  async function trash(confirmed = false){
+  async function trash(){
     const removed = $items.filter(i => i.selected);
-    if(!confirmed) {
-      return confirm = true;
-    }
     const newCrate = $items.filter(i => !i.selected);
     $items = newCrate;
     confirm = false;

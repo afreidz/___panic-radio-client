@@ -1,6 +1,6 @@
 <section>
-  <button class:disabled={vote !== null} on:click={like} class="like">🤘</button>
-  <button class:disabled={vote !== null} on:click={dislike} class="dislike">💩</button>
+  <button class:disabled={voted !== false} on:click={like} class="like">🤘</button>
+  <button class:disabled={voted !== false} on:click={dislike} class="dislike">💩</button>
 </section>
 
 <style lang="less">
@@ -26,8 +26,30 @@
 </style>
 
 <script>
-  export let vote = null;
+  import PanicButton from 'Components/Button/Button';
+  import modal from 'Components/Modal/Store';
+  import { socket } from 'App/Store';
+  export let voted = false;
+  
+  function warn(){
+    modal.update(modal => {
+      modal.content = 'Do you want to remove this vote and change it?';
+      modal.title = 'You have already voted!';
+      modal.action = () => voted = false;
+      modal.label = 'yes';
+      modal.open = true;
+      return modal;
+    });
+  }
 
-  function like(){}
-  function dislike(){}
+  function like(){
+    if(!!voted) return warn();
+    $socket.sendhost({ type: 'vote', vote: 'like' });
+    voted = true;
+  }
+  function dislike(){
+    if(!!voted) return warn();
+    $socket.sendhost({ type: 'vote', vote: 'dislike' });
+    voted = true;
+  }
 </script>

@@ -12,7 +12,7 @@
     <section class="warning">
       <PanicProTip type="Warning!" size="large" tip={"This site ... wait for it ... plays audio! Shocking, I know.  Please be advised that the fine friends at Goolge require that you be ABSOLUTELY SURE you want this to happen.  Therefore no audio will play until you acknowledge this warning and proceed anyway.  Your ears have been warned!"}/>
       <div>
-        <PanicButton on:click={() => warned = true}>I understand, let me in!</PanicButton>
+        <PanicButton on:click={enter}>I understand, let me in!</PanicButton>
       </div>
     </section>
     {:else}
@@ -68,6 +68,8 @@
     <PanicBooth area="booth"/>
     <PanicListeners area="listeners"/>
   </footer>
+  
+  <PanicModal/>
 </div>
 
 <style lang="less">
@@ -172,6 +174,7 @@
   import PanicBooth from 'Components/Booth/Booth';
   import PanicCrate from 'Components/Crate/Crate';
   import PanicTrack from 'Components/Track/Track';
+  import PanicModal from 'Components/Modal/Modal';
   import PanicProTip from 'Components/ProTip/Tip';
   import PanicSearch from 'Components/Crate/Search';
   import PanicButton from 'Components/Button/Button';
@@ -188,6 +191,11 @@
   let warned = false;
 
   $: if(!!$current) play();
+
+  function enter(){
+    warned = true;
+    new Audio('Assets/enter.mp3').play();
+  }
 
   function play(){
     if($current.src === $elevator) return;

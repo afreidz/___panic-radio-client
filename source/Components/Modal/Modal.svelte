@@ -1,14 +1,14 @@
-<div class="modal {stateclass}">
-  <div class="dialog {altclass}" bind:this={dialog}>
+<div class="modal" class:open={$state.open} class:closed={!$state.open}>
+  <div class="dialog">
     <header>
-      <slot name="title"></slot>
-      {#if closebtn}<button class="close" on:click={() => dispatch('close')}>✕</button>{/if}
+      <span>{$state.title}</span>
+      <button class="close" on:click={close}>✕</button>
     </header>
     <main>
-      <slot name="content"></slot>
+      {@html $state.content}
     </main>
     <footer>
-      <slot name="actions"></slot>
+      <PanicButton on:click={trigger}>{$state.label}</PanicButton>
     </footer>
   </div>
 </div>
@@ -22,6 +22,7 @@
     font-size: 1rem;
     background: none;
     outline: none;
+    color: @modal-alt1-color;
   }
 
   .modal {
@@ -48,18 +49,8 @@
     max-width: 18rem;
     transition: all 300ms ease-out;;
     padding: 0;
-
-    &.alt-1 {
-      background: @modal-alt1-bg;
-      color: @modal-alt1-color;
-      .close { color: @modal-alt1-color; }
-    }
-
-    &.alt-2 {
-      background: @modal-alt2-bg;
-      color: @modal-alt2-color;
-      .close { color: @modal-alt2-color; }
-    }
+    background: @modal-alt1-bg;
+    color: @modal-alt1-color;
 
     .closed & {
       transform: scale(0);
@@ -69,6 +60,7 @@
       font-family: "Montserrat";
       font-weight: 900;
       font-size: unit(30px/@one-rem, rem);
+      padding: unit(20px/@one-rem, rem);
       display: flex;
       justify-content: space-between;
     }
@@ -77,24 +69,36 @@
   main {
     font-size: unit(20px/@one-rem, rem);
     margin-bottom: unit(20px/@one-rem, rem) 0;
+    padding: unit(20px/@one-rem, rem);
+  }
+
+  footer {
+    padding: unit(20px/@one-rem, rem);
   }
 </style>
 
 <script>
-  import { createEventDispatcher } from 'svelte';
-  import { onMount } from 'svelte';
-  export let closebtn = true;
-  export let open = false;
-  export let theme = null;
-  export let alt = null;
-  let stateclass;
-  let altclass;
-  let dialog;
+  import PanicButton from 'Components/Button/Button';
+  import state from './Store';
 
-  let dispatch = createEventDispatcher();
+  function trigger(){
+    if(typeof $state.action === 'function'){
+      $state.action();
+    }
+    close(false);
+  }
 
-  $: {
-    altclass = alt ? `alt-${alt}` : '';
-    stateclass = !!open ? 'opened' : 'closed';
+  function close(cancel = true){
+    state.update(s => {
+      s.action = () => {};
+      s.open = false;
+      s.content = '';
+      s.title = '';
+      s.label = '';
+      return s;
+    });
+    if(cancel && typeof $state.cancel === 'function'){
+      $state.cancel();
+    }
   }
 </script>

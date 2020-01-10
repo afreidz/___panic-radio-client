@@ -15,7 +15,7 @@
     </caption>
     <div class="actions">
     {#if !!voting}
-      <PanicVote/>
+      <PanicVote voted={$me.voted}/>
     {:else if !!elevator}
       <PanicElevator/>
     {/if}
@@ -102,6 +102,7 @@
   import PanicProgress from './Progress';
   import PanicElevator from './Elevator';
   import PanicVote from 'Components/Track/Vote';
+  import { me } from 'Components/Listeners/Store';
   import PanicAvatar from 'Components/Avatar/Avatar';
   import { PANIC_RADIO_HOST_ENDPOINT } from 'Config';
   import { muted, current, elevator as downsrc } from './Store';
