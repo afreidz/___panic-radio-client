@@ -5,7 +5,7 @@
 </section>
 
 <style lang="less">
-  @import 'source/Styles/Index';
+  @import 'source/Styles/index';
 
   progress {
     -webkit-appearance: none;

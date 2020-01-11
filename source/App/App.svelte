@@ -1,3 +1,7 @@
+<svelte:head>
+  <meta name="theme-color" content="#192C9B">
+</svelte:head>
+
 <div id="app">
   <header>
     <h1><PanicLogo/></h1>
@@ -184,7 +188,7 @@
 <script>
   import 'Styles/index.less';
   import { fly } from 'svelte/transition';
-  import PanicLogo from 'Assets/Logo.svg';
+  import PanicLogo from 'Assets/logo.svg';
   import getrooms from 'Utilities/getrooms';
   import PanicLoader from 'Assets/loader.svg';
   import { room, openviews } from 'App/Store';
@@ -217,7 +221,7 @@
 
   function enter(){
     warned = true;
-    new Audio('Assets/enter.mp3').play();
+    new Audio('./assets/enter.mp3').play();
   }
 
   function play(){
