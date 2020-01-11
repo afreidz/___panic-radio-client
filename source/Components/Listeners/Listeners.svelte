@@ -1,7 +1,7 @@
 
 <ul>
   {#each $listeners as listener}
-  <li><PanicAvatar user={listener} /></li>
+  <li><PanicAvatar user={listener} click={() => details(listener)} /></li>
   {/each}
 </ul>
 
@@ -21,12 +21,21 @@
       height: 1rem;
       width: 1rem;
       margin-right: 0.5rem;
+      flex-shrink: 0;
     }
   }
 </style>
 
 <script>
-  import { room } from 'App/Store';
-  import { listeners } from './Store';
+  import { openviews } from 'App/Store';
   import PanicAvatar from 'Components/Avatar/Avatar';
+  import { me, listeners, listenerdetails } from './Store';
+
+  function details(listener) {
+    $listenerdetails = listener.id === $me.id
+      ? 'me'
+      : listener;
+
+    openviews.add('listenerdetails');
+  }
 </script>

@@ -43,26 +43,37 @@
     {/if}
   </main>
 
-  {#if [...$openviews].length}
-  <section class="subviews">
-    
-    {#if [...$openviews].includes('crate')}
-    <PanicCrate on:close={() => openviews.delete('crate')}/>
-    {/if}
-
-    {#if [...$openviews].includes('search')}
-    <PanicSearch on:close={() => openviews.delete('search')}/>
-    {/if}
-    
-    {#if [...$openviews].includes('preview')}
-    <PanicPreview on:close={() => openviews.delete('preview')}/>
-    {/if}
-
-  </section>
+  {#if $menuopen}
+  <div class="view" transition:fly={viewfly}>
+    <PanicMenu/>
+  </div>
   {/if}
 
-  <PanicMenu on:crate={crate}/>
-  <PanicControls on:crate={crate}/>
+  {#if [...$openviews].includes('crate')}
+  <div class="view" transition:fly={viewfly}>
+    <PanicCrate on:close={() => openviews.delete('crate')}/>
+  </div>
+  {/if}
+
+  {#if [...$openviews].includes('search')}
+  <div class="view" transition:fly={viewfly}>
+    <PanicSearch on:close={() => openviews.delete('search')}/>
+  </div>
+  {/if}
+  
+  {#if [...$openviews].includes('preview')}
+  <div class="view" transition:fly={viewfly}>
+    <PanicPreview on:close={() => openviews.delete('preview')}/>
+  </div>
+  {/if}
+
+  {#if [...$openviews].includes('listenerdetails')}
+  <div class="view" transition:fly={viewfly}>
+    <PanicListenerDetails on:close={() => openviews.delete('listenerdetails')}/>
+  </div>
+  {/if}
+
+  <PanicControls/>
   
   <footer>
     <PanicBooth area="booth"/>
@@ -111,11 +122,13 @@
     position: fixed;
     left: 0; right: 0;
     top: 2rem; bottom: 2rem;
-    
-    /* overflow: hidden; */
     overflow: auto;
     scroll-snap-type: y mandatory;
     padding-bottom: 37.5vh;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
 
     section {
       width: 100%;
@@ -140,6 +153,20 @@
     }
   }
 
+  .view {
+    width: 100%;
+    height: 100%;
+    max-width: unit(600px/@one-rem, rem);
+    background: @view-bg;
+    color: @view-color;
+    box-shadow: @view-shadow;
+    position: absolute;
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 0; right: 0;
+    z-index: 3;
+  }
+
   footer {
     position: fixed;
     bottom: 0;
@@ -151,14 +178,6 @@
     display: grid;
     grid-template-columns: 8rem auto;
     grid-template-areas: "booth listeners";
-  }
-
-  .subviews {
-    position: absolute;
-    top: 0; bottom: 0;
-    left: 0; right: 0;
-    z-index: 3;
-    max-width: unit(600px/@one-rem, rem);
   }
 </style>
 
@@ -183,7 +202,11 @@
   import PanicMenuToggle from 'Components/Menu/Toggle';
   import { open as menuopen } from 'Components/Menu/Store';
   import PanicListeners from 'Components/Listeners/Listeners';
+  import PanicListenerDetails from 'Components/Listeners/Details';
+  import { me, listenerdetails } from 'Components/Listeners/Store';
   import { tracks, current, elevator } from 'Components/Track/Store';
+
+  const viewfly = { x: -200, duration: 500 };
 
   let tracksections = [];
   let playing = false;
@@ -215,11 +238,5 @@
       tracks.reset();
       currentidx = 0;
     }
-  }
-
-  function crate(){
-    openviews.delete('search');
-    openviews.add('crate');
-    $menuopen = false;
   }
 </script>

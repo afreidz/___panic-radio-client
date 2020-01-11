@@ -20,17 +20,12 @@
   .preview {
     width: 100%;
     height: 100%;
-    max-width: unit(1200px/@one-rem, rem);
     display: grid;
     grid-template-rows: 2rem auto;
     grid-template-columns: 2rem auto;
-    background: @view-bg;
-    color: @view-color;
-    box-shadow: @view-shadow;
     grid-template-areas: 
       'close .'
       'main main';
-    position: absolute;
   }
   .close { 
     grid-area: close; 

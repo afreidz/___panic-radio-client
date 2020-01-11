@@ -1,15 +1,7 @@
-<ul class="{controlslocation}" style="grid-area: {area}">
-
-  {#if [...$pinned].length}
-  <li class="control">
-    <button class="mover" on:click={rotatecontrolslocation}>
-      <em>🔄</em>
-    </button>
-  </li>
-  {/if}
+<ul style="grid-area: {area}">
 
   {#if $pinned.has('mute')}
-  <li class="control" on:click={() => $muted = !$muted}>
+  <li class="control" on:click={mute}>
      <button title="{!!$muted ? 'unmute' : 'mute'}">
       <em>{ !!$muted ? '🔇' : '🔊'}</em>
      </button>
@@ -17,9 +9,17 @@
   {/if}
 
   {#if $pinned.has('crate')}
-  <li class="control" on:click={() => dispatch('crate')}>
+  <li class="control" on:click={crate}>
      <button title="Crate">
       <em>📦</em>
+     </button>
+  </li>
+  {/if}
+
+  {#if $pinned.has('me')}
+  <li class="control" on:click={profile}>
+     <button title="Crate">
+      <em>😃</em>
      </button>
   </li>
   {/if}
@@ -69,31 +69,22 @@
 
 <script>
   import { pinned } from './Store';
-  import { createEventDispatcher } from 'svelte';
+  import { openviews} from 'App/Store';
   import { muted } from 'Components/Track/Store';
   import PanicAvatar from 'Components/Avatar/Avatar';
-
+  import { listenerdetails } from 'Components/Listeners/Store';
   export let area = null;
-  let dispatch = createEventDispatcher();
-  let controlslocation = 'north';
 
-  function rotatecontrolslocation(){
-    switch (controlslocation){
-      case 'north':
-        controlslocation = 'south';
-        break;
-      case 'south':
-        controlslocation = 'east';
-        break;
-      case 'east':
-        controlslocation = 'west';
-        break;
-      case 'west':
-        controlslocation = 'north';
-        break;
-      default:
-        controlslocation = 'north';
-        break;
-    }
+  function profile(){
+    $listenerdetails = 'me';
+    openviews.add('listenerdetails');
+  }
+
+  function mute(){
+    $muted = !$muted;
+  }
+
+  function crate(){
+    openviews.add('crate');
   }
 </script>

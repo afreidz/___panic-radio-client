@@ -35,8 +35,8 @@
 </style>
 
 <script>
-  export let area;
   export let tip = '';
+  export let area = null;
   export let size = 'small';
   export let type = "PRO TIP:";
 </script>

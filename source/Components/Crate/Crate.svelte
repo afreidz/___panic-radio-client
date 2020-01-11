@@ -61,18 +61,13 @@
   .crate {
     width: 100%;
     height: 100%;
-    max-width: unit(1200px/@one-rem, rem);
     display: grid;
     grid-template-columns: 2rem 2rem auto 2rem;
     grid-template-rows: 2rem auto 2rem;
-    background: @view-bg;
-    color: @view-color;
-    box-shadow: @view-shadow;
     grid-template-areas: 
       'close trash . search'
       'main main main main'
       'tip tip tip tip';
-    position: absolute;
   }
 
   .close, .selectall, .trash, .search, .done { 

@@ -1,9 +1,10 @@
-<nav class="menu" class:pinmode={pinmode} class:open={!!$open} style="grid-area: {area}">
+<nav class="menu" class:pinmode={pinmode}>
+  <button class="close" on:click={() => $open = false}>✕</button>
   <ul>
     <li>
       <PanicHolder 
         on:hold={() => (pinmode = true)}
-        on:default={() => ($muted = !$muted)}
+        on:default={mute}
       >
         <div class="menuitem">
           <em>{ !!$muted ? '🔇' : '🔊'}</em>
@@ -19,7 +20,7 @@
     <li>
       <PanicHolder 
         on:hold={() => (pinmode = true)}
-        on:default={() => dispatch('crate')}
+        on:default={crate}
       >
         <div class="menuitem">
           <em>📦</em>
@@ -32,42 +33,62 @@
       <button class="pin" on:click={() => pinned.add('crate')}>📌</button>
       {/if}
     </li>
+    <li>
+      <PanicHolder 
+        on:hold={() => (pinmode = true)}
+        on:default={profile}
+      >
+        <div class="menuitem">
+          <em>😃</em>
+          <span>Profile</span>
+        </div>
+      </PanicHolder>
+      {#if $pinned.has('me')}
+      <button class="pin" on:click={() => pinned.delete('me')}>✖️</button>
+      {:else}
+      <button class="pin" on:click={() => pinned.add('me')}>📌</button>
+      {/if}
+    </li>
     {#if !!pinmode}
     <li class="done">
       <button on:click={() => pinmode = false}>👍</button>
     </li>
     {/if}
   </ul>
-  <div class="tip">
-    <PanicProTip tip={"Click and hold a menu item to enable \"pin mode\" to add menu items to the control sidebar"}/>
-  </div>
+  <PanicProTip area="tip" tip={"Click and hold a menu item to enable \"pin mode\" to add menu items to the control sidebar"}/>
 </nav>
 
 <style lang="less">
   @import 'source/Styles/index';
 
   .menu {
-    background: @menu-bg;
-    z-index: 2;
-    transition: transform 300ms ease-out;
-    transform: translateX(-100%);
-    position: absolute;
-    top: 2rem; bottom: 0;
-    left: 0; right: 0;
-    max-width: unit(600px/@one-rem, rem);
-    display: flex;
-    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 2rem auto;
+    grid-template-rows: 2rem auto 2rem;
+    grid-template-areas: 
+      'close .'
+      'main main'
+      'tip tip ';
+
+    .close { 
+      border: none;
+      background: none;
+      outline: none;
+      font-size: 1rem;
+      color: @view-color;
+      background: rgba(0,0,0,0.3);
+      grid-area: close;
+    }
 
     &.pinmode .pin {
       display: initial;
     }
 
-    &.open {
-      transform: translateX(0);
-    }
-
-    ul {
-      flex-grow: 1;
+    ul { 
+      grid-area: main; 
+      background: rgba(0,0,0,0.3);
     }
 
     li {
@@ -127,21 +148,30 @@
     }
   }
 
-  .tip {
-    justify-self: flex-end;
-  }
 </style>
 
 <script>
+  import { openviews } from 'App/Store';
   import { pinned, open } from './Store';
-  import { createEventDispatcher } from 'svelte';
   import { muted } from 'Components/Track/Store';
   import PanicProTip from 'Components/ProTip/Tip';
   import PanicAvatar from 'Components/Avatar/Avatar';
   import PanicHolder from 'Components/Button/Holder';
-
-  const dispatch = createEventDispatcher();
+  import { listenerdetails } from 'Components/Listeners/Store';
   let pinmode = false;
-  
-  export let area = null;
+
+  function profile(){
+    $open = false;
+    $listenerdetails = 'me';
+    openviews.add('listenerdetails');
+  }
+
+  function mute(){
+    muted.set(!$muted);
+  }
+
+  function crate(){
+    $open = false;
+    openviews.add('crate');
+  }
 </script>

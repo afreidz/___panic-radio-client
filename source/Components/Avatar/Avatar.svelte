@@ -6,7 +6,7 @@
   >
     {#if showphoto}
     <img 
-      src={user.photo || defaultuserimg} 
+      src={user.photo || defualtphoto} 
       alt="Avatar for {user.name}"
     />
     {/if}
@@ -38,17 +38,17 @@
 
   .avatar {
     border-radius: 50%;
-    border: @avatar-border;
-    background: rgba(0,0,0,0.2);
+    background: @avatar-bg;
+    box-shadow: @avatar-shadow;
     overflow: hidden;
     position: absolute;
     top: 0; bottom: 0;
     left: 0; right: 0;
     img {
-      width: 120%;
-      height: 120%;
-      top: -10%;
-      left: -10%;
+      width: 101%;
+      height: 101%;
+      top: -0.5%;
+      left: -0.5%;
       position: relative;
     }
   }
@@ -56,9 +56,8 @@
 
 <script>
   import { votes } from './Store';
-  import defaultuserimg from 'Utilities/defaultuserimg';
-  
   const systemphoto = './assets/emoji.svg';
+  const defualtphoto = './assets/defaultavatar.svg';
   let vote;
 
   export let user = {};

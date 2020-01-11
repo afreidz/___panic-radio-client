@@ -19,6 +19,7 @@ export const socket = derived([room, username, photo, userid], ([$room, $usernam
   set(ws);
 
   if (!!$username || !!$photo || !$userid) {
+    if (ws && ws.readyState === 1) return ws.sendhost({ type: 'listenerinfo', name: $username, photo: $photo, id: $userid });
     ws.onready(() => {
       ws.sendhost({ type: 'listenerinfo', name: $username, photo: $photo, id: $userid });
     });
