@@ -3,31 +3,31 @@
   <main>
     <figure>
       {#if $listenerdetails === 'me'}
-      <PanicHolder on:hold={() => (editing = true)}>
-        <PanicAvatar user={user} />
-      </PanicHolder>
+        <PanicHolder on:hold={() => photoedit = true}>
+          <PanicAvatar editing={photoedit} user={user} on:editdone={photoeditdone} />
+        </PanicHolder>
       {:else}
-      <PanicAvatar user={user} />
+        <PanicAvatar user={user} />
       {/if}
     </figure>
     <caption>
       <strong>
         <span class="key">Listener: </span>
-        {#if editing}
-        <form on:submit|preventDefault={update}>
+        {#if nameedit}
+        <form on:submit|preventDefault={nameeditdone}>
           <PanicInput 
             focus={true}
             minlength={3}
-            maxlength={16}
+            maxlength={18}
             name="username" 
             pattern="[A-Za-z0-9_/.-]+" 
-            placeholder="anonymous_{user.id}"
+            placeholder="anon_{user.id}"
             value={user.name}
           />
           <button type="submit">👍</button>
         </form>
         {:else}
-        <span class="value">{user.name}</span>
+        <span class="value" on:click={() => nameedit = true}>{user.name}</span>
         {/if}
       </strong>
       <small><span class="key">Listening: </span><span class="value">{time(user.id)}</span></small>
@@ -37,15 +37,13 @@
       <li><i>💿</i><span class="value">0</span><span class="key">songs played</span></li>
       <li><i>🎖️</i><span class="value">0</span><span class="key">rank</span></li>
     </ul>
-
-    {#if $me.id === user.id}
-    <PanicProTip 
-      area="tip"
-      type="ProTip!"
-      tip={'Click and hold on your avatar to edit your profile details'}
-    />
-    {/if}
   </main>
+  {#if $me.id === user.id}
+  <PanicProTip
+    type="ProTip!"
+    tip={'Click and hold on your avatar to change your photo. <br> Click your username to edit it.'}
+  />
+  {/if}
 </div>
 
 <style lang='less'>
@@ -54,12 +52,8 @@
   .details {
     width: 100%;
     height: 100%;
-    display: grid;
-    grid-template-columns: 2rem auto;
-    grid-template-rows: 2rem auto;
-    grid-template-areas:
-      'close .'
-      'main main';
+    display: flex;
+    flex-direction: column;
     position: absolute;
     background: @view-bg;
   }
@@ -69,12 +63,11 @@
     height: 100%;
     grid-area: main;
     display: grid;
-    grid-template-rows: unit(200px/@one-rem, rem) 4rem auto 2rem;
+    grid-template-rows: unit(200px/@one-rem, rem) 4rem auto;
     grid-template-areas: 
       'photo'
       'details'
-      'stats'
-      'tip';
+      'stats';
     background: rgba(0,0,0,0.3);
   }
 
@@ -162,24 +155,27 @@
     font-size: 1rem;
     color: @view-color;
     background: rgba(0,0,0,0.3);
-    grid-area: close;
+    width: 2rem;
+    height: 2rem;
+    flex-grow: 0;
+    flex-shrink: 0;
   }
 </style>
 
 <script>
   import moment from 'moment';
-  // import { tick } from 'svelte';
   import { listenerdetails } from './Store';
   import { username, photo } from 'App/Store';
   import { createEventDispatcher } from 'svelte';
   import { me } from 'Components/Listeners/Store';
   import PanicProTip from 'Components/ProTip/Tip';
   import PanicInput from 'Components/Input/Input';
-  import PanicAvatar from 'Components/Avatar/Avatar';
   import PanicHolder from 'Components/Button/Holder';
+  import PanicAvatar from 'Components/Avatar/Avatar';
 
   let dispatch = createEventDispatcher();
-  let editing = false;
+  let photoedit = false;
+  let nameedit = false;
   let user;
 
   $: if($listenerdetails === 'me'){
@@ -188,15 +184,21 @@
     user = $listenerdetails;
   }
 
-  function update(e){
+  function nameeditdone(e){
     let { username: un } = e.target.elements;
     if(un.value !== $username) $username = un.value;
-    editing = false;
+    nameedit = false;
   }
 
   function time(ms){
     let start = moment();
     let end = moment(ms);
     return moment.duration(start-end).humanize();
+  }
+
+  function photoeditdone(e){
+    let { newphoto } = e.detail;
+    if(newphoto) $photo = newphoto;
+    photoedit = false;
   }
 </script>

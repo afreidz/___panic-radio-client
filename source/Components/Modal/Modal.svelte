@@ -1,4 +1,5 @@
-<div class="modal" class:open={$state.open} class:closed={!$state.open}>
+{#if $state.open}
+<div class="modal {$state.theme}" transition:fade={{ duration: 300 }}>
   <div class="dialog">
     <header>
       <span>{$state.title}</span>
@@ -7,22 +8,28 @@
     <main>
       {@html $state.content}
     </main>
+    {#if $state.action !== null}
     <footer>
       <PanicButton on:click={trigger}>{$state.label}</PanicButton>
     </footer>
+    {/if}
   </div>
 </div>
+{/if}
 
 <style lang="less">
   @import 'source/Styles/index';
 
   .close {
-    width: 2rem;
+    width: 1rem;
+    height: 1rem;
     border: none;
     font-size: 1rem;
     background: none;
+    line-height: 1rem;
     outline: none;
-    color: @modal-alt1-color;
+    color: @modal-color;
+    user-select: none;
   }
 
   .modal {
@@ -36,7 +43,6 @@
     justify-content: center;
     align-items: center;
     z-index: 3;
-    &.closed { display: none; }
   }
 
   .dialog {
@@ -47,13 +53,10 @@
     box-shadow: @modal-shadow;
     width: 80%;
     max-width: 18rem;
-    transition: all 300ms ease-out;;
     padding: 0;
-    background: @modal-alt1-bg;
-    color: @modal-alt1-color;
 
-    .closed & {
-      transform: scale(0);
+    .error & {
+      background: @modal-bg-error;
     }
     
     header{
@@ -63,6 +66,7 @@
       padding: unit(20px/@one-rem, rem);
       display: flex;
       justify-content: space-between;
+      span { pointer-events: none; user-select: none; }
     }
   }
 
@@ -78,8 +82,9 @@
 </style>
 
 <script>
-  import PanicButton from 'Components/Button/Button';
   import state from './Store';
+  import { fade } from 'svelte/transition';
+  import PanicButton from 'Components/Button/Button';
 
   function trigger(){
     if(typeof $state.action === 'function'){

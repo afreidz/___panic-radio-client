@@ -23,10 +23,10 @@ export const me = derived([
   $username,
   $listeners,
 ], set) => {
-  let state = $listeners.find(l => l.id === $userid);
+  let state = $listeners.find(l => l.id === Number($userid));
   if (!state) return;
 
-  state.voted = !!$votes.find(v => v.listener === $userid);
+  state.voted = !!$votes.find(v => v.listener === Number($userid));
   set(state);
 }, {});
 

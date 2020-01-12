@@ -4,7 +4,7 @@
   {:else}
   <h4>😨{type}</h4>
   {/if}
-  <p class={size}>{tip}</p>
+  <p class={size}>{@html tip}</p>
 </article>
 
 <style lang="less">

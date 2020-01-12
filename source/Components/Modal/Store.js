@@ -4,7 +4,8 @@ export default writable({
   open: null,
   label: null,
   title: null,
-  action: null,
+  theme: null,
   cancel: null,
   content: null,
+  action: () => { },
 });

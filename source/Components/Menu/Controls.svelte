@@ -69,7 +69,7 @@
 
 <script>
   import { pinned } from './Store';
-  import { openviews} from 'App/Store';
+  import { openviews } from 'App/Store';
   import { muted } from 'Components/Track/Store';
   import PanicAvatar from 'Components/Avatar/Avatar';
   import { listenerdetails } from 'Components/Listeners/Store';

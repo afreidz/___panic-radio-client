@@ -55,7 +55,7 @@
     </li>
     {/if}
   </ul>
-  <PanicProTip area="tip" tip={"Click and hold a menu item to enable \"pin mode\" to add menu items to the control sidebar"}/>
+  <PanicProTip tip={"Click and hold a menu item to enable \"pin mode\" to add menu items to the control sidebar"}/>
 </nav>
 
 <style lang="less">
@@ -64,13 +64,8 @@
   .menu {
     width: 100%;
     height: 100%;
-    display: grid;
-    grid-template-columns: 2rem auto;
-    grid-template-rows: 2rem auto 2rem;
-    grid-template-areas: 
-      'close .'
-      'main main'
-      'tip tip ';
+    display: flex;
+    flex-direction: column;
 
     .close { 
       border: none;
@@ -79,7 +74,9 @@
       font-size: 1rem;
       color: @view-color;
       background: rgba(0,0,0,0.3);
-      grid-area: close;
+      height: 2rem; width: 2rem;
+      flex-grow: 0;
+      flex-shrink: 0;
     }
 
     &.pinmode .pin {
@@ -87,7 +84,8 @@
     }
 
     ul { 
-      grid-area: main; 
+      flex-grow: 1;
+      flex-shrink: 0;
       background: rgba(0,0,0,0.3);
     }
 
