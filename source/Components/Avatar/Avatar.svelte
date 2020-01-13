@@ -90,15 +90,8 @@
   const systemphoto = './assets/emoji.svg';
   const dispatch = createEventDispatcher();
   const defualtphoto = './assets/defaultavatar.svg';
-  const mediaConstraints = { 
-    audio: false, 
-    video: { 
-      width: 200, 
-      height: 200, 
-      resizeMode: 'crop-and-scale', 
-      facingMode: { exact: "user" } 
-    }
-  }
+  const supports = navigator.mediaDevices.getSupportedConstraints();
+  const videoConstraints = { width: 200, height: 200, resizeMode: 'crop-and-scale' };
 
   export let user = {};
   export let editing = false;
@@ -126,7 +119,16 @@
     try {
       stream = await (navigator
       .mediaDevices
-      .getUserMedia(mediaConstraints));
+      .getUserMedia({
+        audio: false,
+        video: { ...videoConstraints, facingMode: { exact: 'user'} },
+      })).catch(async err => {
+        return stream = await (navigator.mediaDevices.getUserMedia({
+          audio: false,
+          video: videoConstraints,
+        }));
+        camera.srcObject = stream;
+      });
       camera.srcObject = stream;
     }catch(err){
       console.warn(err);

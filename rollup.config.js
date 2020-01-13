@@ -9,6 +9,13 @@ import resolve from 'rollup-plugin-node-resolve';
 import globals from 'rollup-plugin-node-globals';
 import builtIns from 'rollup-plugin-node-builtins';
 
+const serveropts = {
+  open: true,
+  port: 5001,
+  contentBase: './public',
+  headers: { 'Access-Control-Allow-Origin': '*' },
+};
+
 export default [{
   input: {
     main: path.resolve(process.cwd(), 'source', 'main.js')
@@ -41,7 +48,7 @@ export default [{
         style: less()
       }
     }),
-    process.env.NODE_ENV !== 'production' ? serve('public') : null,
+    process.env.NODE_ENV !== 'production' ? serve(serveropts) : null,
   ],
   output: {
     entryFileNames: '[name].js',

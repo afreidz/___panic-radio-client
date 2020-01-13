@@ -34,8 +34,8 @@
       <hr/>
     </caption>
     <ul>
-      <li><i>💿</i><span class="value">0</span><span class="key">songs played</span></li>
-      <li><i>🎖️</i><span class="value">0</span><span class="key">rank</span></li>
+      <li><i>💿</i><span class="value">{user.score.plays}</span><span class="key">songs played</span></li>
+      <li><i>🎖️</i><span class="value">{user.score.rank}</span><span class="key">score</span></li>
     </ul>
   </main>
   {#if $me.id === user.id}
