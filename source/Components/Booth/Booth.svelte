@@ -4,7 +4,7 @@
     <PanicAvatar 
       user={dj} 
       showphoto={!!dj}
-      click={handleclick}
+      click={() => handleclick(dj)}
     />
   </li>
   {/each}
@@ -29,6 +29,8 @@
 
 <script>
   import { djs } from './Store';
+  import modal from 'Components/Modal/Store';
+  import { me } from 'Components/Listeners/Store';
   import { socket, room, username, photo } from 'App/Store';
   import PanicAvatar from 'Components/Avatar/Avatar';
 
@@ -40,7 +42,17 @@
   $: if($djs.length > 5) ids = $djs.slice(0,5);
   $: if($djs.length < 5) ids = Array(5).fill(null).map((_,i) => $djs[i]);
   
-  function handleclick(e){
-    $socket.sendhost({ type: 'dj' });
+  function handleclick(dj = {}){
+    if(!$djs.map(d=>d.id).includes($me.id)) return $socket.sendhost({ type: 'dj' });
+    if(dj.id === $me.id) {
+      modal.update(m => {
+        m.content = 'Do you want to leave the DJ booth?';
+        m.title = 'Leave the DJ Booth?';
+        m.action = () => $socket.sendhost({ type: 'leave' });
+        m.label = 'yes';
+        m.open = true;
+        return m;
+      });
+    }
   }
 </script>
