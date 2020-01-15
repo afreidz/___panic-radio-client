@@ -1,11 +1,11 @@
 <div class="crate">
-  <button class="close" on:click={() => dispatch('close')}>✕</button>
+  <button class="close" on:click={close}>✕</button>
   <form on:submit|preventDefault={handlesearch}>
     <label class="search">
       <input 
         type="text" 
         name="search"
-        value={query}
+        value={$query}
         bind:this={searchelm}
       />
       <span>🔍</span>
@@ -23,11 +23,11 @@
         <button on:click={() => active = 'bc'}><BandcampIcon/></button>      
       </li>
     </ul> -->
-    {#if !!loadingstate}
+    {#if !!$loading}
     <div class="loadingstate">
       <PanicLoader/>
     </div>
-    {:else if !searchresults[active].length}
+    {:else if !$results[active].length}
     <div class="nullstate">
       <p>
         {#if !!searchelm && !!searchelm.value}
@@ -41,7 +41,7 @@
     </div>
     {:else}
     <ul class="items">
-    {#each searchresults[active] as result}
+    {#each $results[active] as result}
     <li class="searchresult">
       {#if result.preview}
       <button class="preview" on:click={() => previewtrack(result.preview)}>▶️</button>
@@ -208,32 +208,20 @@
   import BandcampIcon from 'Assets/bandcamp';
   import { createEventDispatcher } from 'svelte';
   import SoundCloudIcon from 'Assets/soundcloud';
-  import { items, preview, results } from './Store';
+  import { items, preview, results, query, loading } from './Store';
 
   let dispatch = createEventDispatcher();
-  let loadingstate = false;
-  let searchresults;
   let active = 'yt';
-  let query = null;
   let searchelm;
   let player;
 
   $: if(searchelm) searchelm.focus();
-  $: searchresults = $results;
-  $: loadingstate = !!query
-    && !searchresults.yt.length
-    && !searchresults.sc.length 
-    && !searchresults.bc.length;
 
   function handlesearch() {
-    if(!searchelm.value || searchelm.value.length <= 2) return false;
-    loadingstate = true;
-
-    if(searchelm.value !== query) {
-      query = searchelm.value;
-      searchresults = { yt: [], sc: [], bc: [] }
-    }
-    $socket.sendhost({ type: 'search', query });
+    results.reset();
+    if(!searchelm.value || searchelm.value.length <= 2) return loading.force(false);
+    if(searchelm.value !== $query) $query = searchelm.value;
+    $socket.sendhost({ type: 'search', query: $query });
   }
 
   function addtocrate(entry, e = null){
@@ -242,7 +230,15 @@
   }
 
   function previewtrack(url){
+    console.log(url);
     $preview = url;
     openviews.add('preview');
+  }
+
+  function close(){
+    $query = null;
+    results.reset();
+    loading.force(false);
+    dispatch('close');
   }
 </script>

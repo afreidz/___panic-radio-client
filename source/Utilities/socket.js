@@ -1,9 +1,22 @@
+import modal from 'Components/Modal/Store';
 const socketMap = new Map;
 
 export default class PanicSocket extends WebSocket {
   constructor(url) {
     super(url);
     this.listeners = new Map;
+
+    this.onhostmessage('error', data => {
+      modal.update(m => {
+        m.content = data.error;
+        m.title = '☠️ Error!';
+        m.theme = 'error';
+        m.action = null;
+        m.open = true;
+        return m;
+      });
+    });
+
     return this;
   }
   sendhost(msg = {}) {
