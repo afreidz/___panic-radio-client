@@ -3,6 +3,12 @@
   <button class="trash" on:click={() => confirm = true}>🗑️</button>
   <button class="selectall" on:click={selectall}>✅</button>
   <button class="done" on:click={() => editing = false}>👍</button>
+  <div class="options">
+    <label>
+      <input type="checkbox" bind:checked={$autoplay}/>
+      <span><em>Autoplay</em> the next track when requested?</span>
+    </label>
+  </div>
   {:else}
   <button class="close" on:click={() => dispatch('close')}>✕</button>
   <button class="search" bind:this={searchButton} on:click={() => openviews.add('search') }>🔍</button>
@@ -63,11 +69,59 @@
     height: 100%;
     display: grid;
     grid-template-columns: 2rem 2rem auto 2rem;
-    grid-template-rows: 2rem auto 2rem;
+    grid-template-rows: 2rem min-content auto 2rem;
     grid-template-areas: 
       'close trash . search'
+      'opts opts opts opts'
       'main main main main'
       'tip tip tip tip';
+  }
+
+  input[type="checkbox"]{
+    visibility: hidden;
+    position: relative;
+    width: 1rem;
+    height: 1rem;
+    margin: 0;
+    padding: 0;
+
+    &:after {
+      visibility: visible;
+      position: absolute;
+      top: 0; bottom: 0;
+      left: 0; right: 0;
+      font-size: 1rem;
+      content: '⬜';
+      opacity: 0.5;
+    }
+    &:checked:after {
+      content: '✅';
+      opacity: 1;
+    }
+  }
+
+  .options {
+    grid-area: opts;
+    padding: 1rem;
+    background: @tip-bg;
+    text-align: center;
+
+    label {
+      display: block;
+      margin: 0 auto;
+      span { 
+        display: inline-block; 
+        vertical-align: middle; 
+        line-height: 1rem;
+        font-size: unit(18px/@one-rem, rem);
+      }
+      input {
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 0.5rem;
+      }
+      em { font-weight: 700; }
+    }
   }
 
   .close, .selectall, .trash, .search, .done { 
@@ -109,29 +163,6 @@
         border: 1px solid transparent;
         text-align: left;
         color: @view-color;
-
-        input[type="checkbox"]{
-          visibility: hidden;
-          position: relative;
-          width: 1rem;
-          height: 1rem;
-          margin: 0;
-          padding: 0;
-
-          &:after {
-            visibility: visible;
-            position: absolute;
-            top: 0; bottom: 0;
-            left: 0; right: 0;
-            font-size: 1rem;
-            content: '⬜';
-            opacity: 0.5;
-          }
-          &:checked:after {
-            content: '✅';
-            opacity: 1;
-          }
-        }
 
         label, p {
           flex-grow: 1;
@@ -192,6 +223,7 @@
   import modal from 'Components/Modal/Store';
   import { createEventDispatcher } from 'svelte';
   import PanicProTip from 'Components/ProTip/Tip';
+  import { autoplay } from 'Components/Booth/Store';
   import PanicButton from 'Components/Button/Button';
   import PanicHolder from 'Components/Button/Holder';
 

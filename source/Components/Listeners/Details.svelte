@@ -4,7 +4,7 @@
     <figure>
       {#if $listenerdetails === 'me'}
         <PanicHolder on:hold={() => photoedit = true}>
-          <PanicAvatar editing={photoedit} user={user} on:editdone={photoeditdone} />
+          <PanicAvatar editing={photoedit} user={user} on:editdone={photoeditdone} showvote={false} />
         </PanicHolder>
       {:else}
         <PanicAvatar user={user} />

@@ -90,6 +90,17 @@
   caption {
     grid-area: details;
     em, strong { display: block; }
+    em {
+      font-family: 'Montserrat';
+      font-size: unit(16px/@one-rem, rem);
+      font-weight: 900;
+      line-height: 1.2;
+    }
+    strong {
+      font-size: unit(12px/@one-rem, rem);
+      font-weight: 400;
+      opacity: 0.6;
+    }
   }
   .actions {
     grid-area: actions;

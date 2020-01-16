@@ -11,7 +11,7 @@
   @import 'source/Styles/index';
   article {
     padding: 0.5rem;
-    background: rgba(255,255,255,0.1);
+    background: @tip-bg;
   }
   h3 {
     font-family: 'Montserrat';
