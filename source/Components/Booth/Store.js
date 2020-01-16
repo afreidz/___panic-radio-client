@@ -1,5 +1,6 @@
-import { socket } from 'App/Store';
 import { derived } from 'svelte/store';
+import Notifier from 'Utilities/notify';
+import { socket, room } from 'App/Store';
 import storehelpers from 'Utilities/storehelpers';
 import { listeners } from 'Components/Listeners/Store';
 
@@ -16,11 +17,18 @@ export const djs = derived([socket, listeners], ([$socket, $listeners], set) => 
   });
 }, []);
 
-export const request = derived([socket], ([$socket], set) => {
+export const request = derived([socket, room], ([$socket, $room], set) => {
+  let notifier = new Notifier();
   let timer;
-  $socket.onhostmessage('request', data => {
+
+  $socket.onhostmessage('request', async data => {
     set(true);
-    timer = setTimeout(() => set(false), data.time);
+    let note = await notifier.notify('Heads up!', `It is your turn to DJ in "${$room}"`);
+    timer = setTimeout(() => {
+      set(false);
+      note.close();
+      notifier.notify('Time is up!', `You are no longer a DJ in "${$room}"`)
+    }, data.time);
     request.respond = song => {
       set(null);
       clearTimeout(timer);
