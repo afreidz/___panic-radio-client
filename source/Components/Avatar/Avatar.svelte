@@ -14,11 +14,11 @@
     {#if showphoto}
     <img src={newphoto || user.photo || defualtphoto} alt="Avatar for {user.name}"/>
     {/if}
-    {#if !!showvote && !!vote}
-    <em>{#if vote === 'like'}🤘{:else if vote === 'dislike'}💩{/if}</em>
-    {/if}
   {/if}
   </div>
+  {#if !!showvote && !!vote && !editing}
+  <em>{#if vote === 'like'}🤘{:else if vote === 'dislike'}💩{/if}</em>
+  {/if}
   {#if editing}
   {#if newphoto}
   <button class="editaction clear" on:click={clear}>❌</button>
@@ -54,6 +54,7 @@
     position: absolute;
     top: 0; bottom: 0;
     left: 0; right: 0;
+    overflow: hidden;
     img, video {
       width: 101%;
       height: 101%;
