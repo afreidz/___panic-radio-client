@@ -25,3 +25,18 @@ export const socket = derived([room, username, photo, userid], ([$room, $usernam
     });
   }
 });
+
+export const backgrounded = writable(false);
+const browserprefix = typeof document.hidden !== 'undefined'
+  ? 'hidden'
+  : typeof document.msHidden !== 'undefined'
+    ? 'ms'
+    : typeof document.webkitHidden !== 'undefined'
+      ? 'webkit'
+      : '';
+const hiddenprop = browserprefix === 'hidden' ? browserprefix : `${browserprefix}Hidden`;
+const visibilityChange = browserprefix === 'hidden' ? 'visibilitychange' : `${browserprefix}visibilitychange`;
+document.addEventListener(visibilityChange, () => {
+  if (document[hiddenprop]) return backgrounded.update(b => true);
+  return backgrounded.update(b => false);
+}, false);

@@ -77,6 +77,12 @@
   </div>
   {/if}
 
+  {#if [...$openviews].includes('play')}
+  <div class="view" transition:fly={viewfly}>
+    <PanicPlay on:close={() => openviews.delete('play')}/>
+  </div>
+  {/if}
+
   <PanicControls/>
   
   <footer>
@@ -191,8 +197,8 @@
   import PanicLogo from 'Assets/logo.svg';
   import getrooms from 'Utilities/getrooms';
   import PanicLoader from 'Assets/loader.svg';
-  import { room, openviews, photo } from 'App/Store';
   import PanicMenu from 'Components/Menu/Menu';
+  import PanicPlay from 'Components/Crate/Play';
   import PanicLobby from 'Components/Lobby/Lobby';
   import PanicBooth from 'Components/Booth/Booth';
   import PanicCrate from 'Components/Crate/Crate';
@@ -208,6 +214,7 @@
   import PanicListeners from 'Components/Listeners/Listeners';
   import PanicListenerDetails from 'Components/Listeners/Details';
   import { me, listenerdetails } from 'Components/Listeners/Store';
+  import { room, openviews, photo, backgrounded } from 'App/Store';
   import { tracks, current, elevator } from 'Components/Track/Store';
 
   const viewfly = { x: -200, duration: 500 };
@@ -244,7 +251,7 @@
       details = {
         title: 'PanicRadio - Something',
         artist: 'somebody',
-        artwork: [{ src: $photo , type: 'image/png' }],
+        artwork: [{ src: $photo, type: 'image/png' }],
       }
     }
 

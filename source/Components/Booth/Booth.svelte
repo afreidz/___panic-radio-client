@@ -41,7 +41,7 @@
 
   $: if($djs.length > 5) ids = $djs.slice(0,5);
   $: if($djs.length < 5) ids = Array(5).fill(null).map((_,i) => $djs[i]);
-  $: if($request === true && $items[0]) request.respond($items.shift());
+  $: if($request === true && $items[0] && $autoplay) request.respond($items.shift());
   $: if($request === false) $socket.sendhost({ type: 'leave' });
   
   function handleclick(dj = {}){

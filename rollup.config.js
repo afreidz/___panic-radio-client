@@ -55,6 +55,6 @@ export default [{
     chunkFileNames: '[name].[hash].js',
     dir: path.resolve(process.cwd(), 'public', 'static'),
     format: 'esm',
-    sourcemaps: process.env.NODE_ENV !== 'production'
+    sourcemap: process.env.NODE_ENV !== 'production' ? 'inline' : false,
   }
 }]
