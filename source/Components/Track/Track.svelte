@@ -45,7 +45,6 @@
     height: 100%;
     max-width: unit(340px/@one-rem, rem);
     max-height: unit(500px/@one-rem, rem);
-
     transform-style: preserve-3d;
     transition: transform 400ms ease-in-out;
     animation: flash 0.01s;

@@ -193,9 +193,9 @@
 
 <script>
   import 'Styles/index.less';
+  import { onMount } from 'svelte';
   import { fly } from 'svelte/transition';
   import PanicLogo from 'Assets/logo.svg';
-  import getrooms from 'Utilities/getrooms';
   import PanicLoader from 'Assets/loader.svg';
   import PanicMenu from 'Components/Menu/Menu';
   import PanicPlay from 'Components/Crate/Play';
@@ -216,6 +216,7 @@
   import { me, listenerdetails } from 'Components/Listeners/Store';
   import { room, openviews, photo, backgrounded } from 'App/Store';
   import { tracks, current, elevator } from 'Components/Track/Store';
+  import { visibilityChange, hiddenprop } from 'Utilities/backgrounded';
 
   const viewfly = { x: -200, duration: 500 };
 
@@ -223,6 +224,13 @@
   let playing = false;
   let currentidx = 0;
   let warned = false;
+
+  onMount(() => {
+    document.addEventListener(visibilityChange, () => {
+      if (document[hiddenprop]) return backgrounded.update(() => true);
+      return backgrounded.update(() => false);
+    }, false);
+  });
 
   $: if(!!$current) play();
 
