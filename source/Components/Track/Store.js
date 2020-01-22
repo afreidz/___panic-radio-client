@@ -16,7 +16,7 @@ export const tracks = (() => {
 
   if (ws.onready) {
     ws.onready(() => {
-      ws.onhostmessage('song', (data) => {
+      ws.onhostmessage('song', data => {
         if (data.queue) {
           queue = data.queue;
         } else if (data.song) {

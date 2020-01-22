@@ -1,7 +1,7 @@
 import { get } from 'svelte/store';
 import { PANIC_RADIO_HOST_ENDPOINT } from '../../config';
 
-export default async function (query, provider = 'youtube') {
+export default async function(query, provider = 'youtube') {
   const body = JSON.stringify(query);
   const url = `${PANIC_RADIO_HOST_ENDPOINT}/search/${provider}`;
   const opts = {

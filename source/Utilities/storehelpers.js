@@ -11,7 +11,7 @@ export function persistantWritable(key, initial) {
     if (json) {
       set(JSON.parse(json));
     }
-    subscribe((current) => {
+    subscribe(current => {
       window.localStorage.setItem(key, JSON.stringify(current));
     });
   })();
@@ -26,15 +26,15 @@ export function persistantWritable(key, initial) {
 export function persistantSet(key) {
   const localset = new Set();
   const json = window.localStorage.getItem(key);
-  if (json) JSON.parse(json).forEach((i) => localset.add(i));
+  if (json) JSON.parse(json).forEach(i => localset.add(i));
   const { subscribe, set, update } = writable(localset);
 
   (() => {
     const json = window.localStorage.getItem(key);
-    if (json) JSON.parse(json).forEach((i) => localset.add(i));
+    if (json) JSON.parse(json).forEach(i => localset.add(i));
     set(localset);
 
-    subscribe((current) => {
+    subscribe(current => {
       window.localStorage.setItem(key, JSON.stringify([...current]));
     });
   })();
@@ -63,15 +63,15 @@ export function writableSet() {
     set,
     update,
     subscribe,
-    add: (i) => {
+    add: i => {
       localstate.add(i);
       update(() => localstate);
     },
-    delete: (i) => {
+    delete: i => {
       localstate.delete(i);
       update(() => localstate);
     },
-    has: (i) => localstate.has(i),
+    has: i => localstate.has(i),
   };
 }
 

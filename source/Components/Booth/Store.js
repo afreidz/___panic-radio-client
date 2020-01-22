@@ -9,10 +9,10 @@ export const autoplay = storehelpers.persistantWritable('autoplay', false);
 export const djs = derived(
   [socket, listeners],
   ([$socket, $listeners], set) => {
-    $socket.onhostmessage('djs', (data) => {
+    $socket.onhostmessage('djs', data => {
       const djs = [];
-      data.djs.forEach((dj) => {
-        const listener = $listeners.find((l) => l.id === dj);
+      data.djs.forEach(dj => {
+        const listener = $listeners.find(l => l.id === dj);
         if (listener) djs.push(listener);
       });
       set(djs);
@@ -28,7 +28,7 @@ export const request = derived(
     const notifier = new Notifier();
     let timer;
 
-    $socket.onhostmessage('request', (data) => {
+    $socket.onhostmessage('request', data => {
       set(true);
       clearTimeout(timer);
       timer = setTimeout(() => {
@@ -43,13 +43,13 @@ export const request = derived(
             openviews.add('play');
           });
       }
-      request.respond = (song) => {
+      request.respond = song => {
         set(null);
         clearTimeout(timer);
-        reqtimeremaining.update((r) => null);
+        reqtimeremaining.update(r => null);
         $socket.sendhost({ type: 'play', song });
       };
-      reqtimeremaining.update((r) => data.time);
+      reqtimeremaining.update(r => data.time);
     });
   },
   null,

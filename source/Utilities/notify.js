@@ -21,7 +21,8 @@ export default class notifier {
 
   async notify(title, msg) {
     this.common.body = msg;
-    if (await cannotify()) return new window.Notification(title, { ...this.common });
+    if (await cannotify())
+      return new window.Notification(title, { ...this.common });
     return console.log('Notification', msg);
   }
 }
