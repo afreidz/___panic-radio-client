@@ -1,13 +1,24 @@
+<script>
+  import PanicAvatar from 'Components/Avatar/Avatar';
+  export let area = null;
+  export let rooms = [];
+</script>
+
 <ul style="grid-area: {area}">
   {#each rooms as r}
-  <li>
-    <a href="/?room={r.name.toLowerCase()}">
-    <em><PanicAvatar user={r.nowplaying ? r.nowplaying.dj : null}/></em>
-    <strong>{r.name}</strong>
-    <span>{r.nowplaying || 'Nothing playing'}</span>
-    <small><span>Listeners:</span> {r.listeners}</small>
-    </a>
-  </li>
+    <li>
+      <a href="/?room={r.name.toLowerCase()}">
+        <em>
+          <PanicAvatar user={r.nowplaying ? r.nowplaying.dj : null} />
+        </em>
+        <strong>{r.name}</strong>
+        <span>{r.nowplaying || 'Nothing playing'}</span>
+        <small>
+          <span>Listeners:</span>
+          {r.listeners}
+        </small>
+      </a>
+    </li>
   {/each}
 </ul>
 
@@ -39,7 +50,10 @@
     height: 2rem;
   }
 
-  a, a:active, a:hover, a:visited {
+  a,
+  a:active,
+  a:hover,
+  a:visited {
     width: 100%;
     height: 100%;
     display: grid;
@@ -65,9 +79,3 @@
     font-size: 0.7rem;
   }
 </style>
-
-<script>
-  import PanicAvatar from 'Components/Avatar/Avatar';
-  export let area = null;
-  export let rooms = [];
-</script>

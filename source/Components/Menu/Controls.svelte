@@ -1,27 +1,49 @@
+<script>
+  import { pinned } from './Store';
+  import { openviews } from 'App/Store';
+  import { muted } from 'Components/Track/Store';
+  import PanicAvatar from 'Components/Avatar/Avatar';
+  import { listenerdetails } from 'Components/Listeners/Store';
+  export let area = null;
+
+  function profile() {
+    $listenerdetails = 'me';
+    openviews.add('listenerdetails');
+  }
+
+  function mute() {
+    $muted = !$muted;
+  }
+
+  function crate() {
+    openviews.add('crate');
+  }
+</script>
+
 <ul style="grid-area: {area}">
 
   {#if $pinned.has('mute')}
-  <li class="control" on:click={mute}>
-     <button title="{!!$muted ? 'unmute' : 'mute'}">
-      <em>{ !!$muted ? '🔇' : '🔊'}</em>
-     </button>
-  </li>
+    <li class="control" on:click={mute}>
+      <button title={!!$muted ? 'unmute' : 'mute'}>
+        <em>{!!$muted ? '🔇' : '🔊'}</em>
+      </button>
+    </li>
   {/if}
 
   {#if $pinned.has('crate')}
-  <li class="control" on:click={crate}>
-     <button title="Crate">
-      <em>📦</em>
-     </button>
-  </li>
+    <li class="control" on:click={crate}>
+      <button title="Crate">
+        <em>📦</em>
+      </button>
+    </li>
   {/if}
 
   {#if $pinned.has('me')}
-  <li class="control" on:click={profile}>
-     <button title="Crate">
-      <em>😃</em>
-     </button>
-  </li>
+    <li class="control" on:click={profile}>
+      <button title="Crate">
+        <em>😃</em>
+      </button>
+    </li>
   {/if}
 </ul>
 
@@ -51,7 +73,7 @@
       margin: 0;
       display: flex;
       justify-content: center;
-      font-size: unit(16px/@one-rem, rem);
+      font-size: unit(16px / @one-rem, rem);
       height: 2rem;
       width: 2rem;
 
@@ -61,30 +83,8 @@
 
       em.hascomponent {
         margin-right: 0;
-        font-size: unit(16px/@one-rem, rem);
+        font-size: unit(16px / @one-rem, rem);
       }
     }
   }
 </style>
-
-<script>
-  import { pinned } from './Store';
-  import { openviews } from 'App/Store';
-  import { muted } from 'Components/Track/Store';
-  import PanicAvatar from 'Components/Avatar/Avatar';
-  import { listenerdetails } from 'Components/Listeners/Store';
-  export let area = null;
-
-  function profile(){
-    $listenerdetails = 'me';
-    openviews.add('listenerdetails');
-  }
-
-  function mute(){
-    $muted = !$muted;
-  }
-
-  function crate(){
-    openviews.add('crate');
-  }
-</script>

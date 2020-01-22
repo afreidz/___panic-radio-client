@@ -7,4 +7,6 @@ const browserprefix = typeof document.hidden !== 'undefined'
       : '';
 
 export const hiddenprop = browserprefix === 'hidden' ? browserprefix : `${browserprefix}Hidden`;
-export const visibilityChange = browserprefix === 'hidden' ? 'visibilitychange' : `${browserprefix}visibilitychange`;
+export const visibilityChange = browserprefix === 'hidden'
+  ? 'visibilitychange'
+  : `${browserprefix}visibilitychange`;
