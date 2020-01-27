@@ -10,7 +10,7 @@
     "build": "npx rollup -c ./rollup.config.js",
     "dev": "npx rollup -c ./rollup.config.js -w",
     "setconfig": "node ./setconfig.js",
-    "lint": "npx eslint . && npx prettier --check *.js *.svelte --write"
+    "lint": "npx eslint . && npx prettier --check *.js *.svelte"
   },
   "husky": {
     "hooks": {
