@@ -2,8 +2,8 @@ import path from 'path';
 import serve from 'rollup-plugin-serve';
 import alias from '@rollup/plugin-alias';
 import svelte from 'rollup-plugin-svelte';
+import svelteconfig from './svelte.config';
 import rollupLess from 'rollup-plugin-less';
-import { less } from 'svelte-preprocess-less';
 import commonjs from 'rollup-plugin-commonjs';
 import resolve from 'rollup-plugin-node-resolve';
 import globals from 'rollup-plugin-node-globals';
@@ -44,7 +44,10 @@ export default [
             find: 'Assets',
             replacement: path.resolve(__dirname, 'public', 'assets'),
           },
-          { find: 'Config', replacement: path.resolve(__dirname, 'config.js') },
+          {
+            find: 'Config',
+            replacement: path.resolve(__dirname, 'config.js'),
+          },
         ],
         resolve: ['.js', '.html', '.less', '.css', '.svg', '.svelte'],
       }),
@@ -61,17 +64,15 @@ export default [
       svelte({
         dev: process.env.NODE_ENV !== 'production',
         extensions: ['.html', '.svg', '.svelte'],
-        preprocess: {
-          style: less(),
-        },
+        ...svelteconfig,
       }),
       process.env.NODE_ENV !== 'production' ? serve(serveropts) : null,
     ],
     output: {
+      format: 'esm',
       entryFileNames: '[name].js',
       chunkFileNames: '[name].[hash].js',
       dir: path.resolve(process.cwd(), 'public', 'static'),
-      format: 'esm',
       sourcemap: process.env.NODE_ENV !== 'production' ? 'inline' : false,
     },
   },

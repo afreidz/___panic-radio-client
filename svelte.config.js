@@ -1,5 +1,7 @@
-const less = require('svelte-preprocess-less');
+import autoPreprocess from 'svelte-preprocess';
 
-module.exports = {
-  preprocess: [less()],
+const config = {
+  preprocess: autoPreprocess(),
 };
+
+export default config;
