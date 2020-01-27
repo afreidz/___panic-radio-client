@@ -1,5 +1,5 @@
-const preprocess = require('svelte-preprocess-less');
+const less = require('svelte-preprocess-less');
 
 module.exports = {
-  preprocess: [preprocess()],
+  preprocess: [less()],
 };

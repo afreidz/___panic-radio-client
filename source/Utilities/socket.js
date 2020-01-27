@@ -1,10 +1,11 @@
 import modal from 'Components/Modal/Store';
-const socketMap = new Map;
+
+const socketMap = new Map();
 
 export default class PanicSocket extends WebSocket {
   constructor(url) {
     super(url);
-    this.listeners = new Map;
+    this.listeners = new Map();
 
     this.onhostmessage('error', data => {
       modal.update(m => {
@@ -19,16 +20,19 @@ export default class PanicSocket extends WebSocket {
 
     return this;
   }
+
   sendhost(msg = {}) {
-    let data = { ...msg, target: 'host' };
+    const data = { ...msg, target: 'host' };
     this.send(JSON.stringify(data));
     return this;
   }
-  onready(fn = () => { }) {
+
+  onready(fn = () => {}) {
     this.addEventListener('open', fn);
     return this;
   }
-  onhostmessage(type, fn = () => { }) {
+
+  onhostmessage(type, fn = () => {}) {
     if (this.listeners.has(type)) {
       this.removeEventListener('message', this.listeners.get(type));
     }

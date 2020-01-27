@@ -7,5 +7,5 @@ export default writable({
   theme: null,
   cancel: null,
   content: null,
-  action: () => { },
+  action: () => {},
 });

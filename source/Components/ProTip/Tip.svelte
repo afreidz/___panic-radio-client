@@ -1,10 +1,19 @@
+<script>
+  export let tip = '';
+  export let area = null;
+  export let size = 'small';
+  export let type = 'PRO TIP:';
+</script>
+
 <article style="grid-area: {area};">
   {#if size !== 'small'}
-  <h3>😨{type}</h3>
+    <h3>😨{type}</h3>
   {:else}
-  <h4>😨{type}</h4>
+    <h4>😨{type}</h4>
   {/if}
-  <p class={size}>{@html tip}</p>
+  <p class={size}>
+    {@html tip}
+  </p>
 </article>
 
 <style lang="less">
@@ -20,23 +29,16 @@
   }
   h4 {
     font-family: 'Montserrat';
-    font-size: unit(14px/@one-rem, rem);
+    font-size: unit(14px / @one-rem, rem);
     font-weight: 600;
   }
   p {
     line-height: 1.6;
     font-weight: 300;
     text-align: justify;
-    font-size: unit(16px/@one-rem, rem);
+    font-size: unit(16px / @one-rem, rem);
     &.small {
-      font-size: unit(12px/@one-rem, rem);
+      font-size: unit(12px / @one-rem, rem);
     }
   }
 </style>
-
-<script>
-  export let tip = '';
-  export let area = null;
-  export let size = 'small';
-  export let type = "PRO TIP:";
-</script>

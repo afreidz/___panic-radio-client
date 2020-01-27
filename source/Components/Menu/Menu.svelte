@@ -1,61 +1,79 @@
-<nav class="menu" class:pinmode={pinmode}>
-  <button class="close" on:click={() => $open = false}>✕</button>
+<script>
+  import { openviews } from 'App/Store';
+  import { pinned, open } from './Store';
+  import { muted } from 'Components/Track/Store';
+  import PanicProTip from 'Components/ProTip/Tip';
+  import PanicAvatar from 'Components/Avatar/Avatar';
+  import PanicHolder from 'Components/Button/Holder';
+  import { listenerdetails } from 'Components/Listeners/Store';
+  let pinmode = false;
+
+  function profile() {
+    $open = false;
+    $listenerdetails = 'me';
+    openviews.add('listenerdetails');
+  }
+
+  function mute() {
+    muted.set(!$muted);
+  }
+
+  function crate() {
+    $open = false;
+    openviews.add('crate');
+  }
+</script>
+
+<nav class="menu" class:pinmode>
+  <button class="close" on:click={() => ($open = false)}>✕</button>
   <ul>
     <li>
-      <PanicHolder 
-        on:hold={() => (pinmode = true)}
-        on:default={mute}
-      >
+      <PanicHolder on:hold={() => (pinmode = true)} on:default={mute}>
         <div class="menuitem">
-          <em>{ !!$muted ? '🔇' : '🔊'}</em>
-          <span>{ !!$muted ? 'Unmute' : 'Mute' }</span>
+          <em>{!!$muted ? '🔇' : '🔊'}</em>
+          <span>{!!$muted ? 'Unmute' : 'Mute'}</span>
         </div>
       </PanicHolder>
       {#if $pinned.has('mute')}
-      <button class="pin" on:click={() => pinned.delete('mute')}>✖️</button>
+        <button class="pin" on:click={() => pinned.delete('mute')}>✖️</button>
       {:else}
-      <button class="pin" on:click={() => pinned.add('mute')}>📌</button>
+        <button class="pin" on:click={() => pinned.add('mute')}>📌</button>
       {/if}
     </li>
     <li>
-      <PanicHolder 
-        on:hold={() => (pinmode = true)}
-        on:default={crate}
-      >
+      <PanicHolder on:hold={() => (pinmode = true)} on:default={crate}>
         <div class="menuitem">
           <em>📦</em>
           <span>Crate</span>
         </div>
       </PanicHolder>
       {#if $pinned.has('crate')}
-      <button class="pin" on:click={() => pinned.delete('crate')}>✖️</button>
+        <button class="pin" on:click={() => pinned.delete('crate')}>✖️</button>
       {:else}
-      <button class="pin" on:click={() => pinned.add('crate')}>📌</button>
+        <button class="pin" on:click={() => pinned.add('crate')}>📌</button>
       {/if}
     </li>
     <li>
-      <PanicHolder 
-        on:hold={() => (pinmode = true)}
-        on:default={profile}
-      >
+      <PanicHolder on:hold={() => (pinmode = true)} on:default={profile}>
         <div class="menuitem">
           <em>😃</em>
           <span>Profile</span>
         </div>
       </PanicHolder>
       {#if $pinned.has('me')}
-      <button class="pin" on:click={() => pinned.delete('me')}>✖️</button>
+        <button class="pin" on:click={() => pinned.delete('me')}>✖️</button>
       {:else}
-      <button class="pin" on:click={() => pinned.add('me')}>📌</button>
+        <button class="pin" on:click={() => pinned.add('me')}>📌</button>
       {/if}
     </li>
     {#if !!pinmode}
-    <li class="done">
-      <button on:click={() => pinmode = false}>👍</button>
-    </li>
+      <li class="done">
+        <button on:click={() => (pinmode = false)}>👍</button>
+      </li>
     {/if}
   </ul>
-  <PanicProTip tip={"Click and hold a menu item to enable \"pin mode\" to add menu items to the control sidebar"}/>
+  <PanicProTip
+    tip={'Click and hold a menu item to enable "pin mode" to add menu items to the control sidebar'} />
 </nav>
 
 <style lang="less">
@@ -67,14 +85,15 @@
     display: flex;
     flex-direction: column;
 
-    .close { 
+    .close {
       border: none;
       background: none;
       outline: none;
       font-size: 1rem;
       color: @view-color;
-      background: rgba(0,0,0,0.3);
-      height: 2rem; width: 2rem;
+      background: rgba(0, 0, 0, 0.3);
+      height: 2rem;
+      width: 2rem;
       flex-grow: 0;
       flex-shrink: 0;
     }
@@ -83,10 +102,10 @@
       display: initial;
     }
 
-    ul { 
+    ul {
       flex-grow: 1;
       flex-shrink: 0;
-      background: rgba(0,0,0,0.3);
+      background: rgba(0, 0, 0, 0.3);
     }
 
     li {
@@ -98,8 +117,8 @@
       &.done {
         justify-content: flex-end;
         border-bottom: none;
-        button { 
-          font-size: 0.75rem; 
+        button {
+          font-size: 0.75rem;
           margin-top: 0.25rem;
           border: none;
           outline: none;
@@ -122,7 +141,7 @@
       border: none;
       height: @menu-item-height;
       outline: none;
-      font-size: unit(16px/@one-rem, rem);
+      font-size: unit(16px / @one-rem, rem);
       flex-grow: 1;
       margin: 0;
       padding: 0;
@@ -135,41 +154,14 @@
       height: @menu-item-height;
       display: inline-grid;
       place-items: center;
-      &.hascomponent { 
+      &.hascomponent {
         width: @menu-item-height;
-        padding: unit(12px/@one-rem, rem);
+        padding: unit(12px / @one-rem, rem);
         margin-right: 2rem - @menu-item-height;
       }
     }
-    span { 
+    span {
       line-height: @menu-item-height;
     }
   }
-
 </style>
-
-<script>
-  import { openviews } from 'App/Store';
-  import { pinned, open } from './Store';
-  import { muted } from 'Components/Track/Store';
-  import PanicProTip from 'Components/ProTip/Tip';
-  import PanicAvatar from 'Components/Avatar/Avatar';
-  import PanicHolder from 'Components/Button/Holder';
-  import { listenerdetails } from 'Components/Listeners/Store';
-  let pinmode = false;
-
-  function profile(){
-    $open = false;
-    $listenerdetails = 'me';
-    openviews.add('listenerdetails');
-  }
-
-  function mute(){
-    muted.set(!$muted);
-  }
-
-  function crate(){
-    $open = false;
-    openviews.add('crate');
-  }
-</script>

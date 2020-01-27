@@ -1,10 +1,11 @@
-<button 
-  disabled={disabled}
-  type={behavior}
-  class={type}
-  on:click
->
-  <slot></slot>
+<script>
+  export let type = null;
+  export let disabled = false;
+  export let behavior = 'button';
+</script>
+
+<button {disabled} type={behavior} class={type} on:click>
+  <slot />
 </button>
 
 <style lang="less">
@@ -20,11 +21,11 @@
     font-weight: 800;
     text-align: center;
     outline: none;
-    font-size: unit(14px/@one-rem, rem);
+    font-size: unit(14px / @one-rem, rem);
     cursor: pointer;
     box-shadow: @button-shadow;
-    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
-    margin-bottom: unit(10px/@one-rem, rem);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    margin-bottom: unit(10px / @one-rem, rem);
 
     &:hover {
       box-shadow: @button-hover-shadow;
@@ -50,7 +51,7 @@
       font-weight: bold;
       text-transform: uppercase;
       background: none;
-      font-size: unit(12px/@one-rem, rem);
+      font-size: unit(12px / @one-rem, rem);
       box-shadow: none;
       &:hover {
         box-shadow: none;
@@ -58,9 +59,3 @@
     }
   }
 </style>
-
-<script>
-  export let type = null;
-  export let disabled = false;
-  export let behavior = 'button';
-</script>

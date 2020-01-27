@@ -4,7 +4,10 @@ import { persistantWritable } from 'Utilities/storehelpers';
 
 export const muted = writable(false);
 export const current = writable(null);
-export const elevator = persistantWritable('elevator', 'http://uk7.internet-radio.com:8000/;stream');
+export const elevator = persistantWritable(
+  'elevator',
+  'http://uk7.internet-radio.com:8000/;stream',
+);
 
 export const tracks = (() => {
   const { set, update, subscribe } = writable([]);
@@ -33,5 +36,5 @@ export const tracks = (() => {
       set(queue);
       return this;
     },
-  }
+  };
 })();
