@@ -114,7 +114,7 @@
       </div>
     {:else}
       <ul class="items" bind:this={crateitems}>
-        {#each $items as entry, i (entry.id)}
+        {#each $items as entry, i (entry.media)}
           <li>
             <PanicHolder on:hold={() => (editing = true)}>
               <div class="crateitem">

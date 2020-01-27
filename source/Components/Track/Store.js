@@ -13,19 +13,16 @@ export const tracks = (() => {
   const { set, update, subscribe } = writable([]);
   const ws = get(socket);
   let queue = [];
+  set(queue);
 
-  if (ws.onready) {
-    ws.onready(() => {
-      ws.onhostmessage('song', data => {
-        if (data.queue) {
-          queue = data.queue;
-        } else if (data.song) {
-          queue.push(data.song);
-        }
-        set(queue);
-      });
-    });
-  }
+  ws.onhostmessage('song', data => {
+    if (data.queue) {
+      queue = data.queue;
+    } else if (data.song) {
+      queue.push(data.song);
+    }
+    update(q => queue);
+  });
 
   return {
     set,

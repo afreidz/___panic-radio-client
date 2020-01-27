@@ -85,7 +85,7 @@
       </div>
     {:else}
       <ul class="items">
-        {#each $results[active] as result}
+        {#each $results[active] as result (result.media)}
           <li class="searchresult">
             {#if result.preview}
               <button
@@ -100,7 +100,7 @@
               </strong>
               <em>
                 {@html result.artist}
-                ({moment(result.duration).format('mm:ss')})
+                ({moment(result.seconds*1000).format('mm:ss')})
               </em>
             </p>
             <button class="addtocrate" on:click={e => addtocrate(result, e)}>
