@@ -3,9 +3,9 @@
   import { pinned, open } from './Store';
   import { muted } from 'Components/Track/Store';
   import PanicProTip from 'Components/ProTip/Tip';
-  import PanicAvatar from 'Components/Avatar/Avatar';
   import PanicHolder from 'Components/Button/Holder';
   import { listenerdetails } from 'Components/Listeners/Store';
+  
   let pinmode = false;
 
   function profile() {
@@ -25,13 +25,13 @@
 </script>
 
 <nav class="menu" class:pinmode>
-  <button class="close" on:click={() => ($open = false)}>✕</button>
+  <button class="close" on:click={() => { $open = false; }}>✕</button>
   <ul>
     <li>
-      <PanicHolder on:hold={() => (pinmode = true)} on:default={mute}>
+      <PanicHolder on:hold={() => { pinmode = true; }} on:default={mute}>
         <div class="menuitem">
-          <em>{!!$muted ? '🔇' : '🔊'}</em>
-          <span>{!!$muted ? 'Unmute' : 'Mute'}</span>
+          <em>{$muted ? '🔇' : '🔊'}</em>
+          <span>{$muted ? 'Unmute' : 'Mute'}</span>
         </div>
       </PanicHolder>
       {#if $pinned.has('mute')}
@@ -41,7 +41,7 @@
       {/if}
     </li>
     <li>
-      <PanicHolder on:hold={() => (pinmode = true)} on:default={crate}>
+      <PanicHolder on:hold={() => { pinmode = true; }} on:default={crate}>
         <div class="menuitem">
           <em>📦</em>
           <span>Crate</span>
@@ -54,7 +54,7 @@
       {/if}
     </li>
     <li>
-      <PanicHolder on:hold={() => (pinmode = true)} on:default={profile}>
+      <PanicHolder on:hold={() => { pinmode = true; }} on:default={profile}>
         <div class="menuitem">
           <em>😃</em>
           <span>Profile</span>
@@ -68,7 +68,7 @@
     </li>
     {#if !!pinmode}
       <li class="done">
-        <button on:click={() => (pinmode = false)}>👍</button>
+        <button on:click={() => { pinmode = false; }}>👍</button>
       </li>
     {/if}
   </ul>

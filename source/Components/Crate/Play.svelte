@@ -5,32 +5,39 @@
   import PanicButton from 'Components/Button/Button';
   import { request, reqtimeremaining } from 'Components/Booth/Store';
 
-  let formattedtime = formatTime($reqtimeremaining);
-  let dispatch = createEventDispatcher();
-  let interval = 1000;
-  let remaining;
+  const dispatch = createEventDispatcher();
+  const interval = 1000;
   let timer;
-
-  timer = setInterval(() => {
-    reqtimeremaining.update(p => (p -= 1));
-    formattedtime = formatTime($reqtimeremaining);
-    if ($reqtimeremaining <= 0) clearInterval(timer);
-  }, interval);
 
   function formatTime(sec) {
     const d = moment.duration(sec * 1000);
     const m = `${d.minutes()}`.padStart(2, '0');
     const s = `${d.seconds()}`.padStart(2, '0');
-    if (isNaN(m) || isNaN(s)) return `∞`;
+    // eslint-disable-next-line no-restricted-globals
+    if (isNaN(m) || isNaN(s)) return '∞';
     return `${m}:${s}`;
   }
 
   function play(song) {
     clearInterval(timer);
-    console.log(song);
     request.respond(song);
     dispatch('close');
   }
+
+  let formattedtime = formatTime($reqtimeremaining);
+  
+  
+
+  timer = setInterval(() => {
+    reqtimeremaining.update((reqstate) => {
+      const u = reqstate - 1;
+      return u;
+    });
+    formattedtime = formatTime($reqtimeremaining);
+    if ($reqtimeremaining <= 0) clearInterval(timer);
+  }, interval);
+
+  
 </script>
 
 <div class="play">

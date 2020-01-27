@@ -12,11 +12,11 @@
   let startTime;
   let durationTime;
 
-  $: startTime = formatTime($progress * 1000);
-  $: durationTime = formatTime(duration * 1000);
-
   timer = setInterval(() => {
-    progress.update(p => (p += 1));
+    progress.update((state) => {
+      const p = state + 1;
+      return p;
+    });
     if ($progress >= duration) clearInterval(timer);
   }, interval);
 
@@ -25,9 +25,13 @@
     const h = `${d.hours()}`.padStart(2, '0');
     const m = `${d.minutes()}`.padStart(2, '0');
     const s = `${d.seconds()}`.padStart(2, '0');
-    if (isNaN(h) || isNaN(m) || isNaN(s)) return `∞`;
+    // eslint-disable-next-line no-restricted-globals
+    if (isNaN(h) || isNaN(m) || isNaN(s)) return '∞';
     return `${h}:${m}:${s}`;
   }
+
+  $: startTime = formatTime($progress * 1000);
+  $: durationTime = formatTime(duration * 1000);
 </script>
 
 <progress value={$progress} max={duration} />

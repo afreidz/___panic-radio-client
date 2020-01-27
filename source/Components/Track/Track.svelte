@@ -12,16 +12,21 @@
   let audio;
   let src;
 
+  export let track = {};
+  export let active = false;
+  export let voting = false;
+  export let elevator = false;
+
   $: {
     if (!!active && !!audio) {
-      new Promise(r => setTimeout(r, 500)).then(() => (isActive = true));
+      new Promise((r) => setTimeout(r, 500)).then(() => { isActive = true; });
       $current = audio;
     } else {
       isActive = false;
     }
   }
 
-  $: src = !!elevator
+  $: src = elevator
     ? $downsrc
     : `${PANIC_RADIO_HOST_ENDPOINT}/${$room}/${track.id}.mp3`;
 
@@ -29,11 +34,6 @@
     audio.src = $downsrc;
     audio.play();
   }
-
-  export let track = {};
-  export let active = false;
-  export let voting = false;
-  export let elevator = false;
 </script>
 
 <article class:active={!!isActive}>

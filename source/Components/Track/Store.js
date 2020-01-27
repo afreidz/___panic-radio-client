@@ -15,13 +15,13 @@ export const tracks = (() => {
   let queue = [];
   set(queue);
 
-  ws.onhostmessage('song', data => {
+  ws.onhostmessage('song', (data) => {
     if (data.queue) {
       queue = data.queue;
     } else if (data.song) {
       queue.push(data.song);
     }
-    update(q => queue);
+    update(() => queue);
   });
 
   return {

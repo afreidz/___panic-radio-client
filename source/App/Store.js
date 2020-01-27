@@ -38,6 +38,6 @@ export const socket = derived(
         });
       });
     }
-    return;
+    return true;
   },
 );

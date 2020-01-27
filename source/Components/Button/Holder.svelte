@@ -2,7 +2,7 @@
   import { createEventDispatcher } from 'svelte';
 
   const dispatch = createEventDispatcher();
-  let delay = 400;
+  const delay = 400;
   let timer;
 
   function starthold(e) {
@@ -13,10 +13,11 @@
     }, delay);
   }
 
-  function endhold(e) {
+  function endhold() {
     if (!timer) return true;
     clearTimeout(timer);
     dispatch('default');
+    return true;
   }
 </script>
 

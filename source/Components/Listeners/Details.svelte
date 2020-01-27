@@ -9,7 +9,7 @@
   import PanicHolder from 'Components/Button/Holder';
   import PanicAvatar from 'Components/Avatar/Avatar';
 
-  let dispatch = createEventDispatcher();
+  const dispatch = createEventDispatcher();
   let photoedit = false;
   let nameedit = false;
   let user;
@@ -21,19 +21,19 @@
   }
 
   function nameeditdone(e) {
-    let { username: un } = e.target.elements;
+    const { username: un } = e.target.elements;
     if (un.value !== $username) $username = un.value;
     nameedit = false;
   }
 
   function time(ms) {
-    let start = moment();
-    let end = moment(ms);
+    const start = moment();
+    const end = moment(ms);
     return moment.duration(start - end).humanize();
   }
 
   function photoeditdone(e) {
-    let { newphoto } = e.detail;
+    const { newphoto } = e.detail;
     if (newphoto) $photo = newphoto;
     photoedit = false;
   }
@@ -44,7 +44,7 @@
   <main>
     <figure>
       {#if $listenerdetails === 'me'}
-        <PanicHolder on:hold={() => (photoedit = true)}>
+        <PanicHolder on:hold={() => { photoedit = true; }}>
           <PanicAvatar
             editing={photoedit}
             {user}
@@ -71,7 +71,7 @@
             <button type="submit">👍</button>
           </form>
         {:else}
-          <span class="value" on:click={() => (nameedit = true)}>
+          <span class="value" on:click={() => { nameedit = true; }}>
             {user.name}
           </span>
         {/if}

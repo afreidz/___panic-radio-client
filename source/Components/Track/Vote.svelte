@@ -1,29 +1,32 @@
 <script>
-  import PanicButton from 'Components/Button/Button';
   import modal from 'Components/Modal/Store';
   import { socket } from 'App/Store';
+  
   export let voted = false;
 
   function warn() {
-    modal.update(modal => {
-      modal.content = 'Do you want to remove this vote and change it?';
-      modal.title = 'You have already voted!';
-      modal.action = () => (voted = false);
-      modal.label = 'yes';
-      modal.open = true;
-      return modal;
+    modal.update((modalstate) => {
+      const m = modalstate;
+      m.content = 'Do you want to remove this vote and change it?';
+      m.title = 'You have already voted!';
+      m.action = () => { voted = false; };
+      m.label = 'yes';
+      m.open = true;
+      return m;
     });
   }
 
   function like() {
-    if (!!voted) return warn();
+    if (voted) return warn();
     $socket.sendhost({ type: 'vote', vote: 'like' });
     voted = true;
+    return true;
   }
   function dislike() {
-    if (!!voted) return warn();
+    if (voted) return warn();
     $socket.sendhost({ type: 'vote', vote: 'dislike' });
     voted = true;
+    return true;
   }
 </script>
 

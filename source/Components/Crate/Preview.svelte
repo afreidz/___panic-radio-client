@@ -2,7 +2,7 @@
   import { preview } from './Store';
   import { createEventDispatcher } from 'svelte';
 
-  let dispatch = createEventDispatcher();
+  const dispatch = createEventDispatcher();
 </script>
 
 <div class="preview">
