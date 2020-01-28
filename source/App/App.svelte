@@ -94,7 +94,11 @@
     <h1>
       <PanicLogo />
     </h1>
-    <PanicMenuToggle area="menu" on:click={() => { $menuopen = !$menuopen; }} />
+    <PanicMenuToggle
+      area="menu"
+      on:click={() => {
+        $menuopen = !$menuopen;
+      }} />
   </header>
 
   <main>
@@ -109,7 +113,7 @@
         </div>
       </section>
     {:else if $tracks.length}
-      {#each $tracks as track, i}
+      {#each $tracks as track, i (track.id)}
         <section bind:this={tracksections[i]}>
           <PanicTrack active={i === currentidx} voting={true} {track} />
         </section>
@@ -151,8 +155,7 @@
 
   {#if [...$openviews].includes('listenerdetails')}
     <div class="view" transition:fly={viewfly}>
-      <PanicListenerDetails
-        on:close={() => openviews.delete('listenerdetails')} />
+      <PanicListenerDetails on:close={() => openviews.delete('listenerdetails')} />
     </div>
   {/if}
 

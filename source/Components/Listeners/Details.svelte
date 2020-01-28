@@ -1,8 +1,8 @@
 <script>
   import moment from 'moment';
+  import { onMount, createEventDispatcher } from 'svelte';
   import { listenerdetails } from './Store';
   import { username, photo } from 'App/Store';
-  import { createEventDispatcher } from 'svelte';
   import { me } from 'Components/Listeners/Store';
   import PanicProTip from 'Components/ProTip/Tip';
   import PanicInput from 'Components/Input/Input';
@@ -12,13 +12,15 @@
   const dispatch = createEventDispatcher();
   let photoedit = false;
   let nameedit = false;
-  let user;
+  let user = $me;
 
-  $: if ($listenerdetails === 'me') {
-    user = $me;
-  } else {
-    user = $listenerdetails;
-  }
+  onMount(() => {
+    if ($listenerdetails === 'me') {
+      user = $me;
+    } else {
+      user = $listenerdetails;
+    }
+  });
 
   function nameeditdone(e) {
     const { username: un } = e.target.elements;
@@ -44,12 +46,11 @@
   <main>
     <figure>
       {#if $listenerdetails === 'me'}
-        <PanicHolder on:hold={() => { photoedit = true; }}>
-          <PanicAvatar
-            editing={photoedit}
-            {user}
-            on:editdone={photoeditdone}
-            showvote={false} />
+        <PanicHolder
+          on:hold={() => {
+            photoedit = true;
+          }}>
+          <PanicAvatar {user} editing={photoedit} on:editdone={photoeditdone} showvote={false} />
         </PanicHolder>
       {:else}
         <PanicAvatar {user} />
@@ -71,7 +72,11 @@
             <button type="submit">👍</button>
           </form>
         {:else}
-          <span class="value" on:click={() => { nameedit = true; }}>
+          <span
+            class="value"
+            on:click={() => {
+              nameedit = true;
+            }}>
             {user.name}
           </span>
         {/if}
