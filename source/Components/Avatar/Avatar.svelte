@@ -1,14 +1,11 @@
 <script>
   import { votes } from './Store';
-  import { onDestroy } from 'svelte';
+  import { onDestroy, createEventDispatcher } from 'svelte';
   import modal from 'Components/Modal/Store';
-  import { createEventDispatcher } from 'svelte';
 
-  const cameraicon = './assets/camera.svg';
   const systemphoto = './assets/emoji.svg';
   const dispatch = createEventDispatcher();
   const defualtphoto = './assets/defaultavatar.svg';
-  const supports = navigator.mediaDevices.getSupportedConstraints();
   const videoConstraints = {
     width: 200,
     height: 200,
@@ -26,15 +23,25 @@
   let stream;
   let newphoto;
 
-  $: if (!user) user = {};
-  $: if (user === 'system')
-    user = { name: 'PanicRadio', photo: systemphoto, id: Infinity };
-  $: vote = $votes.find(v => v.listener === user.id)
-    ? $votes.find(v => v.listener === user.id).vote
-    : null;
+  function disablecam() {
+    if (stream) stream.getTracks().forEach((t) => t.stop());
+    if (camera) camera.src = null;
+  }
 
-  $: if (editing) enablecam();
-  $: if (!editing) disablecam();
+  function takepic() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 200;
+    canvas.height = 200;
+    canvas
+      .getContext('2d')
+      .drawImage(camera, 0, 0, canvas.width, canvas.height);
+    newphoto = canvas.toDataURL();
+  }
+
+  function done() {
+    editing = false;
+    dispatch('editdone', { newphoto });
+  }
 
   onDestroy(disablecam);
 
@@ -45,41 +52,26 @@
           audio: false,
           video: { ...videoConstraints, facingMode: { exact: 'user' } },
         })
-        .catch(async err => {
-          return (stream = await navigator.mediaDevices.getUserMedia({
+        .catch(async () => {
+          stream = await navigator.mediaDevices.getUserMedia({
             audio: false,
             video: videoConstraints,
-          }));
+          });
           camera.srcObject = stream;
         });
       camera.srcObject = stream;
     } catch (err) {
-      console.warn(err);
-      modal.update(modal => {
-        modal.content = 'The camera is not available';
-        modal.title = '☠️ Error!';
-        modal.theme = 'error';
-        modal.action = null;
-        modal.open = true;
-        return modal;
+      modal.update((modalstate) => {
+        const m = modalstate;
+        m.content = 'The camera is not available';
+        m.title = '☠️ Error!';
+        m.theme = 'error';
+        m.action = null;
+        m.open = true;
+        return m;
       });
       done();
     }
-  }
-
-  function disablecam() {
-    if (stream) stream.getTracks().forEach(t => t.stop());
-    if (camera) camera.src = null;
-  }
-
-  function takepic() {
-    let canvas = document.createElement('canvas');
-    canvas.width = 200;
-    canvas.height = 200;
-    canvas
-      .getContext('2d')
-      .drawImage(camera, 0, 0, canvas.width, canvas.height);
-    newphoto = canvas.toDataURL();
   }
 
   function clear() {
@@ -87,17 +79,21 @@
     enablecam();
   }
 
-  function done() {
-    editing = false;
-    dispatch('editdone', { newphoto });
-  }
+  $: if (!user) user = {};
+  $: if (user === 'system') { user = { name: 'PanicRadio', photo: systemphoto, id: Infinity }; }
+  $: vote = $votes.find((v) => v.listener === user.id)
+    ? $votes.find((v) => v.listener === user.id).vote
+    : null;
+
+  $: if (editing) enablecam();
+  $: if (!editing) disablecam();
 </script>
 
 <div class="avatarcontainer">
   <div
     class="avatar"
     title={user.name}
-    on:click={e => {
+    on:click={(e) => {
       if (!editing) click(e);
     }}>
     {#if editing}

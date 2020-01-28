@@ -3,25 +3,26 @@
   import { fade } from 'svelte/transition';
   import PanicButton from 'Components/Button/Button';
 
+  function close(cancel = true) {
+    state.update((modalstate) => {
+      const m = modalstate;
+      m.action = () => {};
+      m.open = false;
+      m.content = '';
+      m.title = '';
+      m.label = '';
+      return m;
+    });
+    if (cancel && typeof $state.cancel === 'function') {
+      $state.cancel();
+    }
+  }
+
   function trigger() {
     if (typeof $state.action === 'function') {
       $state.action();
     }
     close(false);
-  }
-
-  function close(cancel = true) {
-    state.update(s => {
-      s.action = () => {};
-      s.open = false;
-      s.content = '';
-      s.title = '';
-      s.label = '';
-      return s;
-    });
-    if (cancel && typeof $state.cancel === 'function') {
-      $state.cancel();
-    }
   }
 </script>
 

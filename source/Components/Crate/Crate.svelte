@@ -1,5 +1,4 @@
 <script>
-  import { tick } from 'svelte';
   import Sortable from 'sortablejs';
   import { openviews } from 'App/Store';
   import { items, preview } from './Store';
@@ -7,65 +6,39 @@
   import { createEventDispatcher } from 'svelte';
   import PanicProTip from 'Components/ProTip/Tip';
   import { autoplay } from 'Components/Booth/Store';
-  import PanicButton from 'Components/Button/Button';
   import PanicHolder from 'Components/Button/Holder';
 
-  $: {
-    if ($items.length && crateitems)
-      new Sortable(crateitems, {
-        sort: true,
-        onUpdate: save,
-        handle: '.sorter',
-      });
-    if (!$items.length && searchButton) {
-      dispatch('close');
-      searchButton.click();
-    }
-    if (confirm) {
-      modal.update(m => {
-        m.content = `You are about to remove ${
-          $items.filter(i => i.selected).length
-        } songs from your crate.`;
-        m.cancel = () => (confirm = false);
-        m.title = 'Are you sure?';
-        m.action = trash;
-        m.label = 'Yes';
-        m.open = true;
-        return m;
-      });
-    }
-  }
-
-  let dispatch = createEventDispatcher();
+  const dispatch = createEventDispatcher();
+  
   let allselected = false;
-  let edittimer = null;
   let editing = false;
   let confirm = false;
-  let active = null;
   let searchButton;
   let crateitems;
-
-  function save(e) {
-    $items = move($items, e.oldIndex, e.newIndex);
-  }
 
   function move(arr, oldIndex, newIndex) {
     if (newIndex >= arr.length) {
       let k = newIndex - arr.length + 1;
-      while (k--) arr.push(undefined);
+      while (k >= 0) {
+        k -= 1;
+        arr.push(undefined);
+      }
     }
     arr.splice(newIndex, 0, arr.splice(oldIndex, 1)[0]);
     return arr;
   }
 
+  function save(e) {
+    $items = move($items, e.oldIndex, e.newIndex);
+  }
+
   function selectall() {
     allselected = !allselected;
-    $items = $items.map(i => ({ ...i, selected: allselected }));
+    $items = $items.map((i) => ({ ...i, selected: allselected }));
   }
 
   async function trash() {
-    const removed = $items.filter(i => i.selected);
-    const newCrate = $items.filter(i => !i.selected);
+    const newCrate = $items.filter((i) => !i.selected);
     $items = newCrate;
     confirm = false;
     editing = false;
@@ -75,13 +48,41 @@
     $preview = url;
     openviews.add('preview');
   }
+
+  $: {
+    if ($items.length && crateitems) {
+      Sortable(crateitems, {
+        sort: true,
+        onUpdate: save,
+        handle: '.sorter',
+      });
+    }
+    if (!$items.length && searchButton) {
+      dispatch('close');
+      searchButton.click();
+    }
+    if (confirm) {
+      modal.update((modalstate) => {
+        const m = modalstate;
+        m.content = `You are about to remove ${
+          $items.filter((i) => i.selected).length
+        } songs from your crate.`;
+        m.cancel = () => { confirm = false; };
+        m.title = 'Are you sure?';
+        m.action = trash;
+        m.label = 'Yes';
+        m.open = true;
+        return m;
+      });
+    }
+  }
 </script>
 
 <div class="crate" class:editing>
   {#if editing}
-    <button class="trash" on:click={() => (confirm = true)}>🗑️</button>
+    <button class="trash" on:click={() => { confirm = true; }}>🗑️</button>
     <button class="selectall" on:click={selectall}>✅</button>
-    <button class="done" on:click={() => (editing = false)}>👍</button>
+    <button class="done" on:click={() => { editing = false; }}>👍</button>
     <div class="options">
       <label>
         <input type="checkbox" bind:checked={$autoplay} />
@@ -114,9 +115,9 @@
       </div>
     {:else}
       <ul class="items" bind:this={crateitems}>
-        {#each $items as entry, i (entry.id)}
+        {#each $items as entry, i (entry.media)}
           <li>
-            <PanicHolder on:hold={() => (editing = true)}>
+            <PanicHolder on:hold={() => { editing = false; }}>
               <div class="crateitem">
                 {#if editing}
                   <input

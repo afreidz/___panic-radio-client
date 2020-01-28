@@ -9,6 +9,7 @@ const cannotify = async () => {
   } else {
     return get(backgrounded);
   }
+  return false;
 };
 
 export default class notifier {
@@ -21,8 +22,8 @@ export default class notifier {
 
   async notify(title, msg) {
     this.common.body = msg;
-    if (await cannotify())
-      return new window.Notification(title, { ...this.common });
+    if (await cannotify()) return new window.Notification(title, { ...this.common });
+    // eslint-disable-next-line no-console
     return console.log('Notification', msg);
   }
 }

@@ -2,8 +2,8 @@
   import { pinned } from './Store';
   import { openviews } from 'App/Store';
   import { muted } from 'Components/Track/Store';
-  import PanicAvatar from 'Components/Avatar/Avatar';
   import { listenerdetails } from 'Components/Listeners/Store';
+  
   export let area = null;
 
   function profile() {
@@ -24,8 +24,8 @@
 
   {#if $pinned.has('mute')}
     <li class="control" on:click={mute}>
-      <button title={!!$muted ? 'unmute' : 'mute'}>
-        <em>{!!$muted ? '🔇' : '🔊'}</em>
+      <button title={$muted ? 'unmute' : 'mute'}>
+        <em>{$muted ? '🔇' : '🔊'}</em>
       </button>
     </li>
   {/if}

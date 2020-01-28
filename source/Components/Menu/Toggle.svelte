@@ -1,5 +1,6 @@
 <script>
   import { open } from './Store';
+  
   export let area = null;
 </script>
 

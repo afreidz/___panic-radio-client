@@ -9,7 +9,13 @@
   "scripts": {
     "build": "npx rollup -c ./rollup.config.js",
     "dev": "npx rollup -c ./rollup.config.js -w",
-    "setconfig": "node ./setconfig.js"
+    "setconfig": "node ./setconfig.js",
+    "lint": "npx eslint . --ext .js --ext .svelte && npx prettier --check *.js *.svelte"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint"
+    }
   },
   "license": "ISC",
   "dependencies": {
@@ -32,6 +38,15 @@
     "rollup-plugin-svelte": "^5.1.1",
     "sortablejs": "^1.10.2",
     "svelte": "^3.16.7",
+    "husky": "^4.2.1",
     "svelte-preprocess": "^3.3.0"
+  },
+  "devDependencies": {
+    "eslint": "^6.1.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.20.0",
+    "eslint-plugin-svelte3": "^2.7.3",
+    "prettier": "1.19.1",
+    "prettier-plugin-svelte": "^0.7.0"
   }
 }

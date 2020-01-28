@@ -3,10 +3,8 @@
   import { onMount } from 'svelte';
   import { fly } from 'svelte/transition';
   import PanicLogo from 'Assets/logo.svg';
-  import PanicLoader from 'Assets/loader.svg';
   import PanicMenu from 'Components/Menu/Menu';
   import PanicPlay from 'Components/Crate/Play';
-  import PanicLobby from 'Components/Lobby/Lobby';
   import PanicBooth from 'Components/Booth/Booth';
   import PanicCrate from 'Components/Crate/Crate';
   import PanicTrack from 'Components/Track/Track';
@@ -18,19 +16,17 @@
   import PanicControls from 'Components/Menu/Controls';
   import PanicMenuToggle from 'Components/Menu/Toggle';
   import { open as menuopen } from 'Components/Menu/Store';
+  import { openviews, photo, backgrounded } from 'App/Store';
   import PanicListeners from 'Components/Listeners/Listeners';
   import PanicListenerDetails from 'Components/Listeners/Details';
-  import { me, listenerdetails } from 'Components/Listeners/Store';
-  import { room, openviews, photo, backgrounded } from 'App/Store';
   import { tracks, current, elevator } from 'Components/Track/Store';
   import { visibilityChange, hiddenprop } from 'Utilities/backgrounded';
 
   const viewfly = { x: -200, duration: 500 };
+  const tracksections = [];
 
-  let tracksections = [];
-  let playing = false;
-  let currentidx = 0;
   let warned = false;
+  let currentidx = 0;
 
   onMount(() => {
     document.addEventListener(
@@ -43,19 +39,20 @@
     );
   });
 
-  $: if (!!$current) play();
-
   function enter() {
     warned = true;
     new Audio('./assets/enter.mp3').play();
   }
 
-  function play() {
-    if ($current.src === $elevator) return setmeta('down');
-    $current.src = $current.dataset.src;
-    $current.onended = end;
-    playing = true;
-    $current.play();
+  function end() {
+    $current = null;
+    currentidx += 1;
+    if ($tracks[currentidx]) {
+      tracksections[currentidx].scrollIntoView({ behavior: 'smooth' });
+    } else {
+      tracks.reset();
+      currentidx = 0;
+    }
   }
 
   function setmeta(track) {
@@ -74,22 +71,18 @@
       };
     }
 
-    navigator.mediaSession.metadata = new MediaMetadata(details);
-    // navigator.mediaSession.setActionHandler('play', function() {});
-    // navigator.mediaSession.setActionHandler('pause', function() {});
+    navigator.mediaSession.metadata = new window.MediaMetadata(details);
   }
 
-  function end() {
-    $current = null;
-    currentidx += 1;
-    playing = false;
-    if ($tracks[currentidx]) {
-      tracksections[currentidx].scrollIntoView({ behavior: 'smooth' });
-    } else {
-      tracks.reset();
-      currentidx = 0;
-    }
+  function play() {
+    if ($current.src === $elevator) return setmeta('down');
+    $current.src = $current.dataset.src;
+    $current.onended = end;
+    $current.play();
+    return true;
   }
+
+  $: if ($current) play();
 </script>
 
 <svelte:head>
@@ -101,7 +94,7 @@
     <h1>
       <PanicLogo />
     </h1>
-    <PanicMenuToggle area="menu" on:click={() => ($menuopen = !$menuopen)} />
+    <PanicMenuToggle area="menu" on:click={() => { $menuopen = !$menuopen; }} />
   </header>
 
   <main>

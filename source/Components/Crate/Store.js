@@ -9,7 +9,7 @@ export const items = persistantWritable('crate', []);
 export const results = derived(
   [socket],
   ([$socket], set) => {
-    $socket.onhostmessage('searchresults', data => {
+    $socket.onhostmessage('searchresults', (data) => {
       set({ ...data.results });
     });
     results.reset = () => {
@@ -22,7 +22,7 @@ export const results = derived(
 export const loading = derived(
   [results, query],
   ([$results, $query], set) => {
-    set(!!$query && Object.values($results).every(v => v.length === 0));
+    set(!!$query && Object.values($results).every((v) => v.length === 0));
     loading.force = (v = false) => set(v);
   },
   false,

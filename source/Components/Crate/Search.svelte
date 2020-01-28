@@ -1,36 +1,34 @@
 <script>
   import moment from 'moment';
-  import { socket } from 'App/Store';
-  import { openviews } from 'App/Store';
   import PanicLoader from 'Assets/loader';
-  import YouTubeIcon from 'Assets/youtube';
-  import BandcampIcon from 'Assets/bandcamp';
+  import { socket, openviews } from 'App/Store';
   import { createEventDispatcher } from 'svelte';
-  import SoundCloudIcon from 'Assets/soundcloud';
-  import { items, preview, results, query, loading } from './Store';
+  import {
+    items, preview, results, query, loading,
+} from './Store';
 
-  let dispatch = createEventDispatcher();
-  let active = 'yt';
+  const dispatch = createEventDispatcher();
+  const active = 'yt';
   let searchelm;
-  let player;
 
   $: if (searchelm) searchelm.focus();
 
   function handlesearch() {
     results.reset();
-    if (!searchelm.value || searchelm.value.length <= 2)
-      return loading.force(false);
+    if (!searchelm.value || searchelm.value.length <= 2) {
+      loading.force(false);
+      return;
+    }
     if (searchelm.value !== $query) $query = searchelm.value;
     $socket.sendhost({ type: 'search', query: $query });
   }
 
   function addtocrate(entry, e = null) {
     $items = [...$items, entry];
-    if (!!e) e.target.disabled = true;
+    if (e) e.target.disabled = true;
   }
 
   function previewtrack(url) {
-    console.log(url);
     $preview = url;
     openviews.add('preview');
   }
@@ -85,7 +83,7 @@
       </div>
     {:else}
       <ul class="items">
-        {#each $results[active] as result}
+        {#each $results[active] as result (result.media)}
           <li class="searchresult">
             {#if result.preview}
               <button
@@ -100,10 +98,10 @@
               </strong>
               <em>
                 {@html result.artist}
-                ({moment(result.duration).format('mm:ss')})
+                ({moment(result.seconds * 1000).format('mm:ss')})
               </em>
             </p>
-            <button class="addtocrate" on:click={e => addtocrate(result, e)}>
+            <button class="addtocrate" on:click={(e) => addtocrate(result, e)}>
               +
             </button>
           </li>

@@ -1,7 +1,7 @@
 <script>
   import { elevator } from './Store';
 
-  let elevatorOpts = [
+  const elevatorOpts = [
     {
       title: 'Easy Hits Florida',
       url: 'http://airspectrum.cdnstream1.com:8114/1648_128',
@@ -33,7 +33,7 @@
 
 <section>
   <label>
-    <select on:change={e => ($elevator = e.target.value)}>
+    <select on:change={(e) => { $elevator = e.target.value; }}>
       {#each elevatorOpts as e}
         <option selected={$elevator === e.url} value={e.url}>{e.title}</option>
       {/each}

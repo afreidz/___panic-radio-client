@@ -7,8 +7,9 @@ export default class PanicSocket extends WebSocket {
     super(url);
     this.listeners = new Map();
 
-    this.onhostmessage('error', data => {
-      modal.update(m => {
+    this.onhostmessage('error', (data) => {
+      modal.update((modalstate) => {
+        const m = modalstate;
         m.content = data.error;
         m.title = '☠️ Error!';
         m.theme = 'error';
@@ -36,11 +37,11 @@ export default class PanicSocket extends WebSocket {
     if (this.listeners.has(type)) {
       this.removeEventListener('message', this.listeners.get(type));
     }
-    this.listeners.set(type, msg => {
+    this.listeners.set(type, (msg) => {
       const data = JSON.parse(msg.data);
       if (data.target !== 'client') return false;
       if (data.type !== type) return false;
-      fn(data);
+      return fn(data);
     });
     this.addEventListener('message', this.listeners.get(type));
     return this;

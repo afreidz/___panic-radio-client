@@ -1,5 +1,6 @@
 <script>
   import PanicAvatar from 'Components/Avatar/Avatar';
+  
   export let area = null;
   export let rooms = [];
 </script>
