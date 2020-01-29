@@ -9,7 +9,7 @@
   import PanicHolder from 'Components/Button/Holder';
 
   const dispatch = createEventDispatcher();
-  
+
   let allselected = false;
   let editing = false;
   let confirm = false;
@@ -51,7 +51,7 @@
 
   $: {
     if ($items.length && crateitems) {
-      Sortable(crateitems, {
+      Sortable.create(crateitems, {
         sort: true,
         onUpdate: save,
         handle: '.sorter',
@@ -67,7 +67,9 @@
         m.content = `You are about to remove ${
           $items.filter((i) => i.selected).length
         } songs from your crate.`;
-        m.cancel = () => { confirm = false; };
+        m.cancel = () => {
+          confirm = false;
+        };
         m.title = 'Are you sure?';
         m.action = trash;
         m.label = 'Yes';
@@ -80,9 +82,21 @@
 
 <div class="crate" class:editing>
   {#if editing}
-    <button class="trash" on:click={() => { confirm = true; }}>🗑️</button>
+    <button
+      class="trash"
+      on:click={() => {
+        confirm = true;
+      }}>
+      🗑️
+    </button>
     <button class="selectall" on:click={selectall}>✅</button>
-    <button class="done" on:click={() => { editing = false; }}>👍</button>
+    <button
+      class="done"
+      on:click={() => {
+        editing = false;
+      }}>
+      👍
+    </button>
     <div class="options">
       <label>
         <input type="checkbox" bind:checked={$autoplay} />
@@ -94,10 +108,7 @@
     </div>
   {:else}
     <button class="close" on:click={() => dispatch('close')}>✕</button>
-    <button
-      class="search"
-      bind:this={searchButton}
-      on:click={() => openviews.add('search')}>
+    <button class="search" bind:this={searchButton} on:click={() => openviews.add('search')}>
       🔍
     </button>
   {/if}
@@ -117,7 +128,10 @@
       <ul class="items" bind:this={crateitems}>
         {#each $items as entry, i (entry.media)}
           <li>
-            <PanicHolder on:hold={() => { editing = false; }}>
+            <PanicHolder
+              on:hold={() => {
+                editing = true;
+              }}>
               <div class="crateitem">
                 {#if editing}
                   <input
@@ -137,11 +151,7 @@
                     <span>☰</span>
                   </button>
                 {:else}
-                  <button
-                    class="preview"
-                    on:click={() => previewtrack(entry.preview)}>
-                    ▶️
-                  </button>
+                  <button class="preview" on:click={() => previewtrack(entry.preview)}>▶️</button>
                   <p>
                     <strong>
                       {@html entry.title}
@@ -150,9 +160,6 @@
                       {@html entry.artist}
                     </em>
                   </p>
-                  <button class="placeholder">
-                    <span>☰</span>
-                  </button>
                 {/if}
               </div>
             </PanicHolder>

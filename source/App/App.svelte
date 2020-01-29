@@ -13,10 +13,11 @@
   import PanicSearch from 'Components/Crate/Search';
   import PanicButton from 'Components/Button/Button';
   import PanicPreview from 'Components/Crate/Preview';
+  import { openviews, backgrounded } from 'App/Store';
   import PanicControls from 'Components/Menu/Controls';
   import PanicMenuToggle from 'Components/Menu/Toggle';
+  import { listeners } from 'Components/Listeners/Store';
   import { open as menuopen } from 'Components/Menu/Store';
-  import { openviews, photo, backgrounded } from 'App/Store';
   import PanicListeners from 'Components/Listeners/Listeners';
   import PanicListenerDetails from 'Components/Listeners/Details';
   import { tracks, current, elevator } from 'Components/Track/Store';
@@ -56,6 +57,7 @@
   }
 
   function setmeta(track) {
+    const dj = $listeners.find((l) => l.id === track.dj) || {};
     let details;
     if (track === 'down') {
       details = {
@@ -65,9 +67,9 @@
       };
     } else {
       details = {
-        title: 'PanicRadio - Something',
-        artist: 'somebody',
-        artwork: [{ src: $photo, type: 'image/png' }],
+        title: track.title,
+        artist: track.artist,
+        artwork: [{ src: dj.photo || '/assets/emoji.png', type: 'image/png' }],
       };
     }
 
@@ -79,6 +81,7 @@
     $current.src = $current.dataset.src;
     $current.onended = end;
     $current.play();
+    setmeta($tracks[currentidx]);
     return true;
   }
 

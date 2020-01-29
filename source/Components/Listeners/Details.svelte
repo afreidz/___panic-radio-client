@@ -1,6 +1,5 @@
 <script>
   import moment from 'moment';
-  import { onMount, createEventDispatcher } from 'svelte';
   import { listenerdetails } from './Store';
   import { username, photo } from 'App/Store';
   import { me } from 'Components/Listeners/Store';
@@ -8,6 +7,7 @@
   import PanicInput from 'Components/Input/Input';
   import PanicHolder from 'Components/Button/Holder';
   import PanicAvatar from 'Components/Avatar/Avatar';
+  import { onMount, createEventDispatcher } from 'svelte';
 
   const dispatch = createEventDispatcher();
   let photoedit = false;
