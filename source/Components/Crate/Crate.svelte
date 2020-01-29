@@ -45,7 +45,6 @@
   }
 
   function previewtrack(url) {
-    console.log('Track', url);
     $preview = url;
   }
 

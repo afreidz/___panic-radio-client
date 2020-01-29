@@ -84,9 +84,7 @@
       <ul class="items">
         {#each $results[active] as result (result.media)}
           <li class="searchresult">
-            {#if result.preview}
-              <button class="preview" on:click={() => previewtrack(result.media)}>▶️</button>
-            {/if}
+            <button class="preview" on:click={() => previewtrack(result.media)}>▶️</button>
             <p>
               <strong>
                 {@html result.title}

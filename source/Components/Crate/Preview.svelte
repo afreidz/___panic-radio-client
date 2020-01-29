@@ -1,11 +1,22 @@
 <script>
   import { preview } from './Store';
+  import { get } from 'svelte/store';
+  import { muted } from 'Components/Track/Store';
   import { PANIC_RADIO_HOST_ENDPOINT } from '../../../config';
 
   let video;
 
-  $: if (video) video.addEventListener('loadedmetadata', video.requestPictureInPicture);
-  $: console.log('Preview', `${PANIC_RADIO_HOST_ENDPOINT}/preview/${$preview}`);
+  async function launchpreview() {
+    const mutedstate = get(muted);
+    $muted = true;
+    await video.requestPictureInPicture();
+    video.addEventListener('leavepictureinpicture', () => {
+      $preview = null;
+      $muted = mutedstate;
+    });
+  }
+
+  $: if (video) video.addEventListener('loadedmetadata', launchpreview);
 </script>
 
 {#if !!$preview}
@@ -20,4 +31,9 @@
 
 <style lang="less">
   @import 'source/Styles/index';
+  .player {
+    width: 0;
+    height: 0;
+    visibility: hidden;
+  }
 </style>
