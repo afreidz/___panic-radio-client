@@ -1,7 +1,7 @@
 <script>
   import moment from 'moment';
+  import { socket } from 'App/Store';
   import PanicLoader from 'Assets/loader';
-  import { socket, openviews } from 'App/Store';
   import { createEventDispatcher } from 'svelte';
   import {
     items, preview, results, query, loading,
@@ -30,7 +30,6 @@
 
   function previewtrack(url) {
     $preview = url;
-    openviews.add('preview');
   }
 
   function close() {
@@ -86,11 +85,7 @@
         {#each $results[active] as result (result.media)}
           <li class="searchresult">
             {#if result.preview}
-              <button
-                class="preview"
-                on:click={() => previewtrack(result.preview)}>
-                ▶️
-              </button>
+              <button class="preview" on:click={() => previewtrack(result.media)}>▶️</button>
             {/if}
             <p>
               <strong>
@@ -101,9 +96,7 @@
                 ({moment(result.seconds * 1000).format('mm:ss')})
               </em>
             </p>
-            <button class="addtocrate" on:click={(e) => addtocrate(result, e)}>
-              +
-            </button>
+            <button class="addtocrate" on:click={(e) => addtocrate(result, e)}>+</button>
           </li>
         {/each}
       </ul>

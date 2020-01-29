@@ -150,12 +150,6 @@
     </div>
   {/if}
 
-  {#if [...$openviews].includes('preview')}
-    <div class="view" transition:fly={viewfly}>
-      <PanicPreview on:close={() => openviews.delete('preview')} />
-    </div>
-  {/if}
-
   {#if [...$openviews].includes('listenerdetails')}
     <div class="view" transition:fly={viewfly}>
       <PanicListenerDetails on:close={() => openviews.delete('listenerdetails')} />
@@ -177,6 +171,7 @@
 
   <PanicModal />
 </div>
+<PanicPreview />
 
 <style lang="less">
   @import '../Styles/index.less';

@@ -45,8 +45,8 @@
   }
 
   function previewtrack(url) {
+    console.log('Track', url);
     $preview = url;
-    openviews.add('preview');
   }
 
   $: {
@@ -151,7 +151,7 @@
                     <span>☰</span>
                   </button>
                 {:else}
-                  <button class="preview" on:click={() => previewtrack(entry.preview)}>▶️</button>
+                  <button class="preview" on:click={() => previewtrack(entry.media)}>▶️</button>
                   <p>
                     <strong>
                       {@html entry.title}
