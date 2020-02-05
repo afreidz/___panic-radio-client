@@ -1,11 +1,11 @@
 <script>
-  import { openviews } from 'App/Store';
   import { pinned, open } from './Store';
   import { muted } from 'Components/Track/Store';
   import PanicProTip from 'Components/ProTip/Tip';
   import PanicHolder from 'Components/Button/Holder';
+  import { openviews, anonymous, username } from 'App/Store';
   import { listenerdetails } from 'Components/Listeners/Store';
-  
+
   let pinmode = false;
 
   function profile() {
@@ -22,13 +22,27 @@
     $open = false;
     openviews.add('crate');
   }
+
+  function goanon() {
+    anonymous.set(!$anonymous);
+  }
 </script>
 
 <nav class="menu" class:pinmode>
-  <button class="close" on:click={() => { $open = false; }}>✕</button>
+  <button
+    class="close"
+    on:click={() => {
+      $open = false;
+    }}>
+    ✕
+  </button>
   <ul>
     <li>
-      <PanicHolder on:hold={() => { pinmode = true; }} on:default={mute}>
+      <PanicHolder
+        on:hold={() => {
+          pinmode = true;
+        }}
+        on:default={mute}>
         <div class="menuitem">
           <em>{$muted ? '🔇' : '🔊'}</em>
           <span>{$muted ? 'Unmute' : 'Mute'}</span>
@@ -41,7 +55,11 @@
       {/if}
     </li>
     <li>
-      <PanicHolder on:hold={() => { pinmode = true; }} on:default={crate}>
+      <PanicHolder
+        on:hold={() => {
+          pinmode = true;
+        }}
+        on:default={crate}>
         <div class="menuitem">
           <em>📦</em>
           <span>Crate</span>
@@ -54,7 +72,11 @@
       {/if}
     </li>
     <li>
-      <PanicHolder on:hold={() => { pinmode = true; }} on:default={profile}>
+      <PanicHolder
+        on:hold={() => {
+          pinmode = true;
+        }}
+        on:default={profile}>
         <div class="menuitem">
           <em>😃</em>
           <span>Profile</span>
@@ -66,9 +88,26 @@
         <button class="pin" on:click={() => pinned.add('me')}>📌</button>
       {/if}
     </li>
+    <li>
+      <PanicHolder
+        on:hold={() => {
+          pinmode = true;
+        }}
+        on:default={goanon}>
+        <div class="menuitem">
+          <em>{$anonymous ? '👻' : '👤'}</em>
+          <span>{$anonymous ? 'Anonymous' : `Known as ${$username}`}</span>
+        </div>
+      </PanicHolder>
+    </li>
     {#if !!pinmode}
       <li class="done">
-        <button on:click={() => { pinmode = false; }}>👍</button>
+        <button
+          on:click={() => {
+            pinmode = false;
+          }}>
+          👍
+        </button>
       </li>
     {/if}
   </ul>

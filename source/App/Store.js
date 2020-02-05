@@ -8,15 +8,17 @@ export const backgrounded = writable(false);
 export const openviews = storehelpers.writableSet();
 export const photo = storehelpers.persistantWritable('photo', null);
 export const username = storehelpers.persistantWritable('username', null);
+export const anonymous = storehelpers.persistantWritable('anonymous', false);
 export const userid = storehelpers.persistantWritable(
   'userid',
   Number(new Date()),
 );
 
 export const socket = derived(
-  [room, username, photo, userid],
-  ([$room, $username, $photo, $userid], set) => {
+  [room, username, photo, userid, anonymous],
+  ([$room, $username, $photo, $userid, $anonymous], set) => {
     const url = `${PANIC_RADIO_WS_ENDPOINT}/${$room}`;
+    const anonid = Number(new Date());
     const ws = PanicSocket.get(url);
     set(ws);
 
@@ -24,17 +26,17 @@ export const socket = derived(
       if (ws && ws.readyState === 1) {
         return ws.sendhost({
           type: 'listenerinfo',
-          name: $username,
-          photo: $photo,
-          id: $userid,
+          name: $anonymous ? `anon_${anonid}` : $username,
+          photo: $anonymous ? null : $photo,
+          id: $anonymous ? anonid : $userid,
         });
       }
       ws.onready(() => {
         ws.sendhost({
           type: 'listenerinfo',
-          name: $username,
-          photo: $photo,
-          id: $userid,
+          name: $anonymous ? `anon_${anonid}` : $username,
+          photo: $anonymous ? null : $photo,
+          id: $anonymous ? anonid : $userid,
         });
       });
     }
