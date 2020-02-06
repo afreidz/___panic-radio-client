@@ -51,6 +51,12 @@ export const request = derived(
       };
       reqtimeremaining.update(() => data.time);
     });
+    $socket.onhostmessage('miss', () => {
+      set(false);
+      clearTimeout(timer);
+      notifier.notify('Time is up!', `You are no longer a DJ in "${$room}"`);
+      openviews.delete('play');
+    });
   },
   null,
 );
