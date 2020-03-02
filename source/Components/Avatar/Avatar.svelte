@@ -1,10 +1,9 @@
 <script>
-  import { votes } from './Store';
+  import PanicModal from 'Components/Modal/Modal';
   import { onDestroy, createEventDispatcher } from 'svelte';
-  import modal from 'Components/Modal/Store';
 
-  const systemphoto = './assets/emoji.svg';
   const dispatch = createEventDispatcher();
+  const systemphoto = './assets/emoji.svg';
   const defualtphoto = './assets/defaultavatar.svg';
   const videoConstraints = {
     width: 200,
@@ -13,12 +12,12 @@
   };
 
   export let user = {};
+  export let vote = null;
   export let editing = false;
   export let showvote = true;
   export let showphoto = true;
   export let click = () => {};
 
-  let vote;
   let camera;
   let stream;
   let newphoto;
@@ -32,9 +31,7 @@
     const canvas = document.createElement('canvas');
     canvas.width = 200;
     canvas.height = 200;
-    canvas
-      .getContext('2d')
-      .drawImage(camera, 0, 0, canvas.width, canvas.height);
+    canvas.getContext('2d').drawImage(camera, 0, 0, canvas.width, canvas.height);
     newphoto = canvas.toDataURL();
   }
 
@@ -61,15 +58,17 @@
         });
       camera.srcObject = stream;
     } catch (err) {
-      modal.update((modalstate) => {
-        const m = modalstate;
-        m.content = 'The camera is not available';
-        m.title = '☠️ Error!';
-        m.theme = 'error';
-        m.action = null;
-        m.open = true;
-        return m;
+      const modal = new PanicModal({
+        intro: true,
+        target: document.body,
+        props: {
+          open: true,
+          theme: 'error',
+          title: '☠️ Error!',
+          content: 'The camera is not available.',
+        },
       });
+      modal.$on('close', () => modal.$destroy());
       done();
     }
   }
@@ -80,11 +79,9 @@
   }
 
   $: if (!user) user = {};
-  $: if (user === 'system') { user = { name: 'PanicRadio', photo: systemphoto, id: Infinity }; }
-  $: vote = $votes.find((v) => v.listener === user.id)
-    ? $votes.find((v) => v.listener === user.id).vote
-    : null;
-
+  $: if (user === 'system') {
+    user = { name: 'PanicRadio', photo: systemphoto, id: Infinity };
+  }
   $: if (editing) enablecam();
   $: if (!editing) disablecam();
 </script>
@@ -103,9 +100,7 @@
         <video autoplay bind:this={camera} />
       {/if}
     {:else if showphoto}
-      <img
-        src={newphoto || user.photo || defualtphoto}
-        alt="Avatar for {user.name}" />
+      <img src={newphoto || user.photo || defualtphoto} alt="Avatar for {user.name}" />
     {/if}
   </div>
   {#if !!showvote && !!vote && !editing}

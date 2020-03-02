@@ -1,50 +1,41 @@
 <script>
-  import { room } from 'App/Store';
   import PanicProgress from './Progress';
-  import PanicElevator from './Elevator';
-  import PanicVote from 'Components/Track/Vote';
-  import { me } from 'Components/Listeners/Store';
+  import { createEventDispatcher } from 'svelte';
+  // import PanicVote from 'Components/Track/Vote';
   import PanicAvatar from 'Components/Avatar/Avatar';
   import { PANIC_RADIO_HOST_ENDPOINT } from 'Config';
-  import { muted, current, elevator as downsrc } from './Store';
 
-  let isActive;
+  export let track = {};
+  export let member = {};
+  export let muted = true;
+  export let active = false;
+  export let voting = false;
+
+  const dispatch = createEventDispatcher();
+
   let audio;
   let src;
 
-  export let track = {};
-  export let active = false;
-  export let voting = false;
-  export let elevator = false;
-
-  $: {
-    if (!!active && !!audio) {
-      new Promise((r) => setTimeout(r, 500)).then(() => { isActive = true; });
-      $current = audio;
-    } else {
-      isActive = false;
-    }
+  function end() {
+    active = false;
+    dispatch('end');
   }
 
-  $: src = elevator
-    ? $downsrc
-    : `${PANIC_RADIO_HOST_ENDPOINT}/${$room}/${track.id}.mp3`;
-
-  $: if (!!elevator && !!$downsrc && !!audio) {
-    audio.src = $downsrc;
-    audio.play();
-  }
+  $: src = `${PANIC_RADIO_HOST_ENDPOINT}/${track.room}/${track.id}.mp3`;
+  $: if (active && audio) audio.play();
 </script>
 
-<article class:active={!!isActive}>
+<svelte:options accessors={true} />
+
+<article class:active>
   <div class="front">
     <figure>
-      <PanicAvatar user={track.dj} showvote={false} />
+      <PanicAvatar user={member} showvote={false} />
     </figure>
   </div>
   <div class="back">
     <figure>
-      <PanicAvatar user={track.dj} showvote={false} />
+      <PanicAvatar user={member} showvote={false} />
     </figure>
     <caption>
       <em>{track.title}</em>
@@ -52,14 +43,14 @@
       <PanicProgress start={track.elapsed} duration={track.duration} />
     </caption>
     <div class="actions">
-      {#if !!voting}
-        <PanicVote voted={$me.voted} />
-      {:else if !!elevator}
-        <PanicElevator />
-      {/if}
+      <!-- {#if voting}
+        <PanicVote />
+      {/if} -->
     </div>
   </div>
-  <audio bind:this={audio} data-src={src} muted={$muted} />
+  {#if active}
+    <audio bind:this={audio} {src} {muted} on:ended={end} />
+  {/if}
 </article>
 
 <style lang="less">

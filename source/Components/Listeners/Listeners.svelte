@@ -1,17 +1,17 @@
 <script>
-  import { openviews } from 'App/Store';
   import PanicAvatar from 'Components/Avatar/Avatar';
-  import { me, listeners, listenerdetails } from './Store';
+  import { openviews, listenerdetails } from 'App/Store';
+
+  export let listeners = [];
 
   function details(listener) {
-    $listenerdetails = listener.id === $me.id ? 'me' : listener;
-
+    $listenerdetails = listener;
     openviews.add('listenerdetails');
   }
 </script>
 
 <ul>
-  {#each $listeners as listener}
+  {#each listeners as listener}
     <li>
       <PanicAvatar user={listener} click={() => details(listener)} />
     </li>

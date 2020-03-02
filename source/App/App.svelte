@@ -8,84 +8,117 @@
   import PanicBooth from 'Components/Booth/Booth';
   import PanicCrate from 'Components/Crate/Crate';
   import PanicTrack from 'Components/Track/Track';
-  import PanicModal from 'Components/Modal/Modal';
   import PanicProTip from 'Components/ProTip/Tip';
   import PanicSearch from 'Components/Crate/Search';
   import PanicButton from 'Components/Button/Button';
-  import PanicPreview from 'Components/Crate/Preview';
-  import { openviews, backgrounded } from 'App/Store';
+  // import PanicPreview from 'Components/Crate/Preview';
   import PanicControls from 'Components/Menu/Controls';
   import PanicMenuToggle from 'Components/Menu/Toggle';
-  import { listeners } from 'Components/Listeners/Store';
-  import { open as menuopen } from 'Components/Menu/Store';
   import PanicListeners from 'Components/Listeners/Listeners';
   import PanicListenerDetails from 'Components/Listeners/Details';
-  import { tracks, current, elevator } from 'Components/Track/Store';
   import { visibilityChange, hiddenprop } from 'Utilities/backgrounded';
+  import {
+    muted,
+    items,
+    tracks,
+    socket,
+    userid,
+    members,
+    request,
+    username,
+    openviews,
+    listeners,
+    anonymous,
+    backgrounded,
+    listenerdetails,
+  } from 'App/Store';
 
   const viewfly = { x: -200, duration: 500 };
-  const tracksections = [];
-
+  const trackcomponents = [];
+  // const tracksections = [];
   let warned = false;
-  let currentidx = 0;
+  let current = 0;
 
-  onMount(() => {
-    document.addEventListener(
-      visibilityChange,
-      () => {
-        if (document[hiddenprop]) return backgrounded.update(() => true);
-        return backgrounded.update(() => false);
-      },
-      false,
-    );
-  });
+  $: if (trackcomponents[current]) trackcomponents[current].$set({ active: true });
+
+  function showprofile() {
+    listenerdetails.update(() => $listeners.find((l) => l.id === $userid));
+    openviews.add('listenerdetails');
+  }
+
+  function respond(e) {
+    $socket.sendhost({ type: 'play', song: e.detail });
+  }
+
+  function background() {
+    backgrounded.update(() => document[hiddenprop]);
+  }
+
+  function addtocrate(e) {
+    items.update(() => [...$items, e.detail]);
+  }
 
   function enter() {
     warned = true;
+    muted.update(() => false);
     new Audio('./assets/enter.mp3').play();
   }
 
   function end() {
-    $current = null;
-    currentidx += 1;
-    if ($tracks[currentidx]) {
-      tracksections[currentidx].scrollIntoView({ behavior: 'smooth' });
-    } else {
-      tracks.reset();
-      currentidx = 0;
-    }
+    const next = trackcomponents[current + 1];
+    if (!next) return;
+
+    const section = document.getElementById(`track_${next.track.id}`);
+
+    next.$set({ active: true });
+    section.scrollIntoView({ behavior: 'smooth' });
+    current += 1;
   }
 
-  function setmeta(track) {
-    const dj = $listeners.find((l) => l.id === track.dj) || {};
-    let details;
-    if (track === 'down') {
-      details = {
-        title: 'PanicRadio - Nothing',
-        artist: 'nobody',
-        artwork: [{ src: '/assets/emoji.png', type: 'image/png' }],
-      };
-    } else {
-      details = {
-        title: track.title,
-        artist: track.artist,
-        artwork: [{ src: dj.photo || '/assets/emoji.png', type: 'image/png' }],
-      };
-    }
+  onMount(() => {
+    socket.subscribe((s) => console.log('Connected to: ', s.connectionURL));
+    document.addEventListener(visibilityChange, background, false);
+  });
 
-    navigator.mediaSession.metadata = new window.MediaMetadata(details);
-  }
+  // function end() {
+  //   $current = null;
+  //   currentidx += 1;
+  //   if ($tracks[currentidx]) {
+  //     tracksections[currentidx].scrollIntoView({ behavior: 'smooth' });
+  //   } else {
+  //     tracks.reset();
+  //     currentidx = 0;
+  //   }
+  // }
 
-  function play() {
-    if ($current.src === $elevator) return setmeta('down');
-    $current.src = $current.dataset.src;
-    $current.onended = end;
-    $current.play();
-    setmeta($tracks[currentidx]);
-    return true;
-  }
+  // function setmeta(track) {
+  //   const dj = $listeners.find((l) => l.id === track.dj) || {};
+  //   let details;
+  //   if (track === 'down') {
+  //     details = {
+  //       title: 'PanicRadio - Nothing',
+  //       artist: 'nobody',
+  //       artwork: [{ src: '/assets/emoji.png', type: 'image/png' }],
+  //     };
+  //   } else {
+  //     details = {
+  //       title: track.title,
+  //       artist: track.artist,
+  //       artwork: [{ src: dj.photo || '/assets/emoji.png', type: 'image/png' }],
+  //     };
+  //   }
 
-  $: if ($current) play();
+  //   navigator.mediaSession.metadata = new window.MediaMetadata(details);
+  // }
+
+  // function play() {
+  //   if ($current.src === $elevator) return setmeta('down');
+  //   $current.src = $current.dataset.src;
+  //   $current.onended = end;
+  //   $current.play();
+  //   setmeta($tracks[currentidx]);
+  //   return true;
+  // }
 </script>
 
 <svelte:head>
@@ -97,11 +130,7 @@
     <h1>
       <PanicLogo />
     </h1>
-    <PanicMenuToggle
-      area="menu"
-      on:click={() => {
-        $menuopen = !$menuopen;
-      }} />
+    <PanicMenuToggle area="menu" on:click={() => openviews.add('menu')} />
   </header>
 
   <main>
@@ -110,68 +139,102 @@
         <PanicProTip
           type="Warning!"
           size="large"
-          tip={'This site ... wait for it ... plays audio! Shocking, I know.  Please be advised that the fine friends at Goolge require that you be ABSOLUTELY SURE you want this to happen.  Therefore no audio will play until you acknowledge this warning and proceed anyway.  Your ears have been warned!'} />
+          tip={'This site ... wait for it ... plays audio! Shocking.  Please be advised that the fine friends at Goolge require that you be ABSOLUTELY SURE you want this to happen.  Therefore no audio will play until you acknowledge this warning and proceed anyway.  Your ears have been warned!'} />
         <div>
           <PanicButton on:click={enter}>I understand, let me in!</PanicButton>
         </div>
       </section>
-    {:else if $tracks.length}
-      {#each $tracks as track, i (track.id)}
-        <section bind:this={tracksections[i]}>
-          <PanicTrack active={i === currentidx} voting={true} {track} />
+    {:else}
+      {#each [...$tracks.values()] as track, i (track.id)}
+        <section id="track_{track.id}">
+          <PanicTrack
+            {track}
+            on:end={end}
+            voting={true}
+            muted={$muted}
+            active={false}
+            bind:this={trackcomponents[i]}
+            member={$listeners.find((l) => l.id === track.member)} />
         </section>
       {/each}
-    {:else}
-      <section transition:fly={{ y: 100, duration: 500 }}>
-        <PanicTrack
-          active={true}
-          voting={false}
-          elevator={true}
-          track={{ title: 'Nothing', artist: 'Nobody', dj: 'system' }} />
-      </section>
     {/if}
   </main>
 
-  {#if $menuopen}
+  {#if [...$openviews].includes('menu')}
     <div class="view" transition:fly={viewfly}>
-      <PanicMenu />
+      <PanicMenu
+        muted={$muted}
+        controls={true}
+        username={$username}
+        anonymous={$anonymous}
+        on:profile={showprofile}
+        on:crate={() => openviews.add('crate')}
+        on:mute={() => muted.update((m) => !m)}
+        on:close={() => openviews.delete('menu')}
+        on:anonymous={() => anonymous.update((a) => !a)} />
     </div>
   {/if}
 
   {#if [...$openviews].includes('crate')}
     <div class="view" transition:fly={viewfly}>
-      <PanicCrate on:close={() => openviews.delete('crate')} />
+      <PanicCrate
+        items={$items}
+        on:close={() => openviews.delete('crate')}
+        on:save={(newItems) => {
+          $items = newItems;
+        }} />
     </div>
   {/if}
 
   {#if [...$openviews].includes('search')}
     <div class="view" transition:fly={viewfly}>
-      <PanicSearch on:close={() => openviews.delete('search')} />
+      <PanicSearch
+        on:add={addtocrate}
+        items={$items.length}
+        on:preview={() => console.log('preview')}
+        on:close={() => openviews.delete('search')} />
     </div>
   {/if}
 
   {#if [...$openviews].includes('listenerdetails')}
     <div class="view" transition:fly={viewfly}>
-      <PanicListenerDetails on:close={() => openviews.delete('listenerdetails')} />
+      <PanicListenerDetails
+        listener={$listenerdetails}
+        editable={$listenerdetails.id === $userid}
+        on:close={() => openviews.delete('listenerdetails')} />
     </div>
   {/if}
 
   {#if [...$openviews].includes('play')}
     <div class="view" transition:fly={viewfly}>
-      <PanicPlay on:close={() => openviews.delete('play')} />
+      <PanicPlay
+        items={$items}
+        on:play={respond}
+        remaining={$request}
+        on:close={() => openviews.delete('play')} />
     </div>
   {/if}
 
-  <PanicControls />
+  <PanicControls
+    muted={$muted}
+    anonymous={$anonymous}
+    on:profile={showprofile}
+    on:crate={() => openviews.add('crate')}
+    on:mute={() => muted.update((m) => !m)} />
 
   <footer>
-    <PanicBooth area="booth" />
-    <PanicListeners area="listeners" />
+    <PanicBooth
+      area="booth"
+      members={$members}
+      canjoin={$items.length !== 0}
+      on:crate={() => openviews.add('crate')}
+      on:join={() => $socket.sendhost({ type: 'join' })}
+      on:leave={() => $socket.sendhost({ type: 'leave' })}
+      member={$members.map((m) => m && m.id).includes($userid)} />
+    <PanicListeners listeners={$listeners} />
   </footer>
-
-  <PanicModal />
 </div>
-<PanicPreview />
+<!-- <PanicPreview /> -->
 
 <style lang="less">
   @import '../Styles/index.less';

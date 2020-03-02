@@ -1,45 +1,32 @@
 <script>
-  import { pinned } from './Store';
-  import { openviews } from 'App/Store';
-  import { muted } from 'Components/Track/Store';
-  import { listenerdetails } from 'Components/Listeners/Store';
-  
-  export let area = null;
+  import { pinned } from 'App/Store';
+  import { createEventDispatcher } from 'svelte';
 
-  function profile() {
-    $listenerdetails = 'me';
-    openviews.add('listenerdetails');
-  }
+  export let muted = true;
+  export let anonymous = false;
 
-  function mute() {
-    $muted = !$muted;
-  }
-
-  function crate() {
-    openviews.add('crate');
-  }
+  const dispatch = createEventDispatcher();
 </script>
 
-<ul style="grid-area: {area}">
-
+<ul>
   {#if $pinned.has('mute')}
-    <li class="control" on:click={mute}>
-      <button title={$muted ? 'unmute' : 'mute'}>
-        <em>{$muted ? '🔇' : '🔊'}</em>
+    <li class="control" on:click={() => dispatch('mute')}>
+      <button title={muted ? 'unmute' : 'mute'}>
+        <em>{muted ? '🔇' : '🔊'}</em>
       </button>
     </li>
   {/if}
 
   {#if $pinned.has('crate')}
-    <li class="control" on:click={crate}>
+    <li class="control" on:click={() => dispatch('crate')}>
       <button title="Crate">
         <em>📦</em>
       </button>
     </li>
   {/if}
 
-  {#if $pinned.has('me')}
-    <li class="control" on:click={profile}>
+  {#if $pinned.has('me') && !anonymous}
+    <li class="control" on:click={() => dispatch('profile')}>
       <button title="Crate">
         <em>😃</em>
       </button>

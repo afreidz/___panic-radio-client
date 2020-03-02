@@ -1,23 +1,27 @@
-import modal from 'Components/Modal/Store';
+import PanicModal from 'Components/Modal/Modal';
 
 const socketMap = new Map();
 
 export default class PanicSocket extends WebSocket {
   constructor(url) {
     super(url);
+    this.connectionURL = url;
     this.listeners = new Map();
 
     this.onhostmessage('error', (data) => {
-      modal.update((modalstate) => {
-        const m = modalstate;
-        m.content = data.error;
-        m.title = '☠️ Error!';
-        m.theme = 'error';
-        m.action = null;
-        m.open = true;
-        return m;
+      const modal = new PanicModal({
+        intro: true,
+        target: document.body,
+        props: {
+          open: true,
+          title: '☠️ Error!',
+          content: data.error,
+        },
       });
+      modal.$on('close', () => modal.$destroy());
     });
+
+    socketMap.set(this.connectionURL, this);
 
     return this;
   }

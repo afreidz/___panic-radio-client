@@ -1,30 +1,23 @@
 <script>
   import moment from 'moment';
-  import { listenerdetails } from './Store';
   import { username, photo } from 'App/Store';
-  import { me } from 'Components/Listeners/Store';
+  import { createEventDispatcher } from 'svelte';
   import PanicProTip from 'Components/ProTip/Tip';
   import PanicInput from 'Components/Input/Input';
   import PanicHolder from 'Components/Button/Holder';
   import PanicAvatar from 'Components/Avatar/Avatar';
-  import { onMount, createEventDispatcher } from 'svelte';
+
+  export let listener = {};
+  export let editable = false;
 
   const dispatch = createEventDispatcher();
   let photoedit = false;
   let nameedit = false;
-  let user = $me;
-
-  onMount(() => {
-    if ($listenerdetails === 'me') {
-      user = $me;
-    } else {
-      user = $listenerdetails;
-    }
-  });
 
   function nameeditdone(e) {
     const { username: un } = e.target.elements;
     if (un.value !== $username) $username = un.value;
+    listener.name = un.value;
     nameedit = false;
   }
 
@@ -37,6 +30,7 @@
   function photoeditdone(e) {
     const { newphoto } = e.detail;
     if (newphoto) $photo = newphoto;
+    listener.photo = newphoto;
     photoedit = false;
   }
 </script>
@@ -45,15 +39,19 @@
   <button class="close" on:click={() => dispatch('close')}>✕</button>
   <main>
     <figure>
-      {#if $listenerdetails === 'me'}
+      {#if editable}
         <PanicHolder
           on:hold={() => {
             photoedit = true;
           }}>
-          <PanicAvatar {user} editing={photoedit} on:editdone={photoeditdone} showvote={false} />
+          <PanicAvatar
+            user={listener}
+            editing={photoedit}
+            on:editdone={photoeditdone}
+            showvote={false} />
         </PanicHolder>
       {:else}
-        <PanicAvatar {user} />
+        <PanicAvatar user={listener} />
       {/if}
     </figure>
     <caption>
@@ -67,8 +65,8 @@
               maxlength={18}
               name="username"
               pattern="[A-Za-z0-9_/.-]+"
-              placeholder="anon_{user.id}"
-              value={user.name} />
+              placeholder="anon_{listener.id}"
+              value={listener.name} />
             <button type="submit">👍</button>
           </form>
         {:else}
@@ -77,30 +75,30 @@
             on:click={() => {
               nameedit = true;
             }}>
-            {user.name}
+            {listener.name}
           </span>
         {/if}
       </strong>
       <small>
         <span class="key">Listening:</span>
-        <span class="value">{time(user.id)}</span>
+        <span class="value">{time(listener.id)}</span>
       </small>
       <hr />
     </caption>
     <ul>
       <li>
         <i>💿</i>
-        <span class="value">{(user.score && user.score.plays) || 0}</span>
+        <span class="value">{(listener.score && listener.score.plays) || 0}</span>
         <span class="key">songs played</span>
       </li>
       <li>
         <i>🎖️</i>
-        <span class="value">{(user.score && user.score.rank) || 0}</span>
+        <span class="value">{(listener.score && listener.score.rank) || 0}</span>
         <span class="key">score</span>
       </li>
     </ul>
   </main>
-  {#if $me.id === user.id}
+  {#if editable}
     <PanicProTip
       type="ProTip!"
       tip={'Click and hold on your avatar to change your photo. <br> Click your username to edit it.'} />

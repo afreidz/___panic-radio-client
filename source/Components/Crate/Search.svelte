@@ -3,39 +3,45 @@
   import { socket } from 'App/Store';
   import PanicLoader from 'Assets/loader';
   import { createEventDispatcher } from 'svelte';
-  import {
-    items, preview, results, query, loading,
-} from './Store';
+
+  export let items = 0;
 
   const dispatch = createEventDispatcher();
-  const active = 'yt';
-  let searchelm;
+  let loading = false;
+  let query = null;
+  let results = [];
+  let search;
 
-  $: if (searchelm) searchelm.focus();
+  $: if (search) search.focus();
+  $: $socket.onhostmessage('searchresults', (data) => {
+    results = data.results;
+    loading = false;
+  });
 
   function handlesearch() {
-    results.reset();
-    if (!searchelm.value || searchelm.value.length <= 2) {
-      loading.force(false);
+    results = [];
+    if (!search.value || search.value.length <= 2) {
+      loading = false;
       return;
     }
-    if (searchelm.value !== $query) $query = searchelm.value;
-    $socket.sendhost({ type: 'search', query: $query });
+    loading = true;
+    if (search.value !== query) query = search.value;
+    $socket.sendhost({ type: 'search', query });
   }
 
   function addtocrate(entry, e = null) {
-    $items = [...$items, entry];
     if (e) e.target.disabled = true;
+    dispatch('add', entry);
   }
 
   function previewtrack(url) {
-    $preview = url;
+    dispatch('preview', url);
   }
 
   function close() {
-    $query = null;
-    results.reset();
-    loading.force(false);
+    query = null;
+    results = [];
+    loading = false;
     dispatch('close');
   }
 </script>
@@ -44,36 +50,25 @@
   <button class="close" on:click={close}>✕</button>
   <form on:submit|preventDefault={handlesearch}>
     <label class="search">
-      <input type="text" name="search" value={$query} bind:this={searchelm} />
+      <input type="text" name="search" value={query} bind:this={search} />
       <span>🔍</span>
     </label>
   </form>
   <div class="content">
-    <!-- <ul class="tabs">
-      <li class:active={active === 'yt'}>
-        <button on:click={() => active = 'yt'}><YouTubeIcon/></button>
-      </li>
-      <li class:active={active === 'sc'}>
-        <button on:click={() => active = 'sc'}><SoundCloudIcon/></button>
-      </li>
-      <li class:active={active === 'bc'}>
-        <button on:click={() => active = 'bc'}><BandcampIcon/></button>      
-      </li>
-    </ul> -->
-    {#if !!$loading}
+    {#if !!loading}
       <div class="loadingstate">
         <PanicLoader />
       </div>
-    {:else if !$results[active].length}
+    {:else if !results.length}
       <div class="nullstate">
         <p>
-          {#if !!searchelm && !!searchelm.value}
-            <span>Could not find any results for "{searchelm.value}"</span>
+          {#if search && search.value}
+            <span>Could not find any results for "{search.value}"</span>
             <small>Please try your search again</small>
           {:else}
             <span>
-              You have {$items.length} song
-              {#if $items.length !== 1}s{/if}
+              You have {items} song
+              {#if items !== 1}s{/if}
               in your crate.
             </span>
             <small>Search to add more</small>
@@ -82,7 +77,7 @@
       </div>
     {:else}
       <ul class="items">
-        {#each $results[active] as result (result.media)}
+        {#each results as result (result.media)}
           <li class="searchresult">
             <button class="preview" on:click={() => previewtrack(result.media)}>▶️</button>
             <p>

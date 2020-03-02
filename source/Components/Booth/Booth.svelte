@@ -1,55 +1,49 @@
 <script>
-  import modal from 'Components/Modal/Store';
-  import { socket, openviews } from 'App/Store';
-  import { items } from 'Components/Crate/Store';
-  import { me } from 'Components/Listeners/Store';
-  import { djs, request, autoplay } from './Store';
+  import { createEventDispatcher } from 'svelte';
+  import PanicModal from 'Components/Modal/Modal';
   import PanicAvatar from 'Components/Avatar/Avatar';
 
   export let area = null;
+  export let members = [];
+  export let member = false;
+  export let canjoin = false;
 
-  let ids = [];
-  $: ids = $djs.length >= 5
-    ? $djs.slice(0, 5)
-    : Array(5)
-      .fill(null)
-      .map((_, i) => $djs[i]);
+  const dispatch = createEventDispatcher();
 
-  $: if ($request === true && $items[0] && $autoplay) request.respond($items.shift());
-  $: if ($request === false) $socket.sendhost({ type: 'leave' });
+  function handleclick(existing = {}) {
+    const props = { open: false };
+    let trigger = () => {};
 
-  function handleclick(dj = {}) {
-    if (!$items || $items.length === 0) {
-      modal.update((modalstate) => {
-        const m = modalstate;
-        m.content = 'How about adding some items to your crate before DJ-ing?';
-        m.title = "You can't DJ just yet!";
-        m.action = () => openviews.add('crate');
-        m.label = 'ok';
-        m.open = true;
-        return m;
-      });
-      return;
+    if (!canjoin) {
+      props.open = true;
+      props.label = 'ok';
+      props.title = "You can't DJ just yet!";
+      props.content = 'How about adding some items to your crate first?';
+      trigger = () => dispatch('crate');
     }
-    if (dj.id === $me.id) {
-      modal.update((modalstate) => {
-        const m = modalstate;
-        m.content = 'Do you want to leave the DJ booth?';
-        m.title = 'Leave the DJ Booth?';
-        m.action = () => $socket.sendhost({ type: 'leave' });
-        m.label = 'yes';
-        m.open = true;
-        return m;
-      });
+
+    if (existing) {
+      props.open = true;
+      props.label = 'yes';
+      props.title = 'Leave the DJ Booth?';
+      props.content = 'Do you want to leave the DJ booth?';
+      trigger = () => dispatch('leave');
     }
-    if (!$djs.map((d) => d.id).includes($me.id)) $socket.sendhost({ type: 'dj' });
+
+    if (props.open) {
+      const modal = new PanicModal({ intro: true, target: document.body, props });
+      modal.$on('close', () => modal.$destroy());
+      modal.$on('trigger', trigger);
+    } else if (!existing) {
+      dispatch('join');
+    }
   }
 </script>
 
 <ul style="grid-area: {area}">
-  {#each ids as dj, i}
+  {#each members as member, i}
     <li>
-      <PanicAvatar user={dj} showphoto={!!dj} click={() => handleclick(dj)} />
+      <PanicAvatar user={member} showphoto={!!member} click={() => handleclick(member)} />
     </li>
   {/each}
 </ul>

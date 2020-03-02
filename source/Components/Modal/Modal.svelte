@@ -1,44 +1,43 @@
 <script>
-  import state from './Store';
   import { fade } from 'svelte/transition';
+  import { createEventDispatcher } from 'svelte';
   import PanicButton from 'Components/Button/Button';
 
-  function close(cancel = true) {
-    state.update((modalstate) => {
-      const m = modalstate;
-      m.action = () => {};
-      m.open = false;
-      m.content = '';
-      m.title = '';
-      m.label = '';
-      return m;
-    });
-    if (cancel && typeof $state.cancel === 'function') {
-      $state.cancel();
-    }
+  const dispatch = createEventDispatcher();
+
+  export let title = '';
+  export let content = '';
+  export let label = null;
+  export let theme = null;
+  export let open = false;
+
+  async function trigger() {
+    dispatch('trigger');
+    open = false;
+    await new Promise((r) => setTimeout(r, 400));
+    dispatch('close');
   }
 
-  function trigger() {
-    if (typeof $state.action === 'function') {
-      $state.action();
-    }
-    close(false);
+  async function close() {
+    open = false;
+    await new Promise((r) => setTimeout(r, 400));
+    dispatch('close');
   }
 </script>
 
-{#if $state.open}
-  <div class="modal {$state.theme}" transition:fade={{ duration: 300 }}>
+{#if open}
+  <div class="modal {theme}" transition:fade={{ duration: 300 }}>
     <div class="dialog">
       <header>
-        <span>{$state.title}</span>
+        <span>{title}</span>
         <button class="close" on:click={close}>✕</button>
       </header>
       <main>
-        {@html $state.content}
+        {@html content}
       </main>
-      {#if $state.action !== null}
+      {#if label}
         <footer>
-          <PanicButton on:click={trigger}>{$state.label}</PanicButton>
+          <PanicButton on:click={trigger}>{label}</PanicButton>
         </footer>
       {/if}
     </div>

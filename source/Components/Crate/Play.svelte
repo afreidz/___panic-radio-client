@@ -1,43 +1,38 @@
 <script>
   import moment from 'moment';
-  import { items } from './Store';
   import { createEventDispatcher } from 'svelte';
   import PanicButton from 'Components/Button/Button';
-  import { request, reqtimeremaining } from 'Components/Booth/Store';
 
-  const dispatch = createEventDispatcher();
+  export let remaining = 10000;
+  export let items = [];
+
   const interval = 1000;
   let timer;
 
-  function formatTime(sec) {
-    const d = moment.duration(sec * 1000);
-    const m = `${d.minutes()}`.padStart(2, '0');
-    const s = `${d.seconds()}`.padStart(2, '0');
-    // eslint-disable-next-line no-restricted-globals
-    if (isNaN(m) || isNaN(s)) return '∞';
-    return `${m}:${s}`;
+  const dispatch = createEventDispatcher();
+
+  function formatTime(ms) {
+    const duration = moment.duration(ms);
+    return moment.utc(duration.as('milliseconds')).format('mm:ss');
   }
 
   function play(song) {
     clearInterval(timer);
-    request.respond(song);
+    dispatch('play', song);
     dispatch('close');
   }
 
-  let formattedtime = formatTime($reqtimeremaining);
-  
-  
+  let formattedtime = formatTime(remaining);
 
   timer = setInterval(() => {
-    reqtimeremaining.update((reqstate) => {
-      const u = reqstate - 1;
-      return u;
-    });
-    formattedtime = formatTime($reqtimeremaining);
-    if ($reqtimeremaining <= 0) clearInterval(timer);
+    if (remaining <= 0 || remaining === null) {
+      clearInterval(timer);
+      return dispatch('close');
+    }
+    remaining -= 1000;
+    formattedtime = formatTime(remaining);
+    return true;
   }, interval);
-
-  
 </script>
 
 <div class="play">
@@ -49,7 +44,7 @@
       <small>remaining to play a song</small>
     </div>
     <ul class="items">
-      {#each $items as entry, i (entry.media)}
+      {#each items as entry, i (entry.media)}
         <li class="item">
           <section>
             <strong>{entry.title}</strong>

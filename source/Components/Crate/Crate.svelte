@@ -1,18 +1,18 @@
 <script>
   import Sortable from 'sortablejs';
-  import { openviews } from 'App/Store';
-  import { items, preview } from './Store';
-  import modal from 'Components/Modal/Store';
   import { createEventDispatcher } from 'svelte';
+  import PanicModal from 'Components/Modal/Modal';
   import PanicProTip from 'Components/ProTip/Tip';
-  import { autoplay } from 'Components/Booth/Store';
   import PanicHolder from 'Components/Button/Holder';
+  import { openviews, preview, autoplay } from 'App/Store';
 
   const dispatch = createEventDispatcher();
 
+  export let items = [];
+
   let allselected = false;
+  let confirmed = false;
   let editing = false;
-  let confirm = false;
   let searchButton;
   let crateitems;
 
@@ -29,19 +29,47 @@
   }
 
   function save(e) {
-    $items = move($items, e.oldIndex, e.newIndex);
+    const newItems = move(items, e.oldIndex, e.newIndex);
+    dispatch('save', newItems);
+  }
+
+  function done() {
+    editing = false;
+  }
+
+  function edit() {
+    editing = true;
   }
 
   function selectall() {
     allselected = !allselected;
-    $items = $items.map((i) => ({ ...i, selected: allselected }));
+    items = items.map((i) => ({ ...i, selected: allselected }));
   }
 
   async function trash() {
-    const newCrate = $items.filter((i) => !i.selected);
-    $items = newCrate;
-    confirm = false;
-    editing = false;
+    if (!confirmed) {
+      const modal = new PanicModal({
+        intro: true,
+        target: document.body,
+        props: {
+          open: true,
+          label: 'yes',
+          cancel: true,
+          title: 'Are you sure?',
+          content: `You are about to remove ${items.filter((i) => i.selected).length} songs.`,
+        },
+      });
+      modal.$on('close', () => modal.$destroy());
+      modal.$on('trigger', () => {
+        confirmed = true;
+        trash();
+      });
+    } else {
+      const newItems = items.filter((i) => !i.selected);
+      dispatch('save', newItems);
+      confirmed = false;
+      done();
+    }
   }
 
   function previewtrack(url) {
@@ -49,31 +77,11 @@
   }
 
   $: {
-    if ($items.length && crateitems) {
+    if (items.length && crateitems) {
       Sortable.create(crateitems, {
         sort: true,
         onUpdate: save,
         handle: '.sorter',
-      });
-    }
-    if (!$items.length && searchButton) {
-      dispatch('close');
-      searchButton.click();
-    }
-    if (confirm) {
-      modal.update((modalstate) => {
-        const m = modalstate;
-        m.content = `You are about to remove ${
-          $items.filter((i) => i.selected).length
-        } songs from your crate.`;
-        m.cancel = () => {
-          confirm = false;
-        };
-        m.title = 'Are you sure?';
-        m.action = trash;
-        m.label = 'Yes';
-        m.open = true;
-        return m;
       });
     }
   }
@@ -81,21 +89,9 @@
 
 <div class="crate" class:editing>
   {#if editing}
-    <button
-      class="trash"
-      on:click={() => {
-        confirm = true;
-      }}>
-      🗑️
-    </button>
+    <button class="trash" on:click={trash}>🗑️</button>
     <button class="selectall" on:click={selectall}>✅</button>
-    <button
-      class="done"
-      on:click={() => {
-        editing = false;
-      }}>
-      👍
-    </button>
+    <button class="done" on:click={done}>👍</button>
     <div class="options">
       <label>
         <input type="checkbox" bind:checked={$autoplay} />
@@ -112,12 +108,12 @@
     </button>
   {/if}
   <div class="content">
-    {#if !$items.length}
+    {#if !items.length}
       <div class="nullstate">
         <p>
           <span>
-            You have {$items.length} song
-            {#if $items.length !== 1}s{/if}
+            You have {items.length} song
+            {#if items.length !== 1}s{/if}
             in your crate.
           </span>
           <small>Search to add more</small>
@@ -125,12 +121,9 @@
       </div>
     {:else}
       <ul class="items" bind:this={crateitems}>
-        {#each $items as entry, i (entry.media)}
+        {#each items as entry, i (entry.media)}
           <li>
-            <PanicHolder
-              on:hold={() => {
-                editing = true;
-              }}>
+            <PanicHolder on:hold={edit}>
               <div class="crateitem">
                 {#if editing}
                   <input
